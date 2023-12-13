@@ -1,0 +1,34 @@
+﻿using MPowerKit.Navigation;
+using MPowerKit.Navigation.Utilities;
+using MPowerKit.Regions;
+
+namespace Sample;
+
+public static class MauiProgram
+{
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .UseMPowerKit(b =>
+            {
+                b.ConfigureServices(s =>
+                {
+                    s.RegisterForNavigation<MainPage>();
+                    s.RegisterForNavigation<NewPage1>();
+                    s.RegisterForNavigation<NewContent1>();
+                })
+                .UsePageEventsInRegions()
+                .OnAppStart("NavigationPage/MainPage/NewPage1");
+            })
+            .UseMPowerKitRegions()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
+
+        return builder.Build();
+    }
+}
