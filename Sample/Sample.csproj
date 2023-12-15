@@ -63,8 +63,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\MPowerKit.Navigation.Popups\MPowerKit.Navigation.Popups.csproj" />
 	  <ProjectReference Include="..\MPowerKit.Regions\MPowerKit.Regions.csproj" />
 	  <ProjectReference Include="..\MPowerKit.Navigation\MPowerKit.Navigation.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="PopupPageTest.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

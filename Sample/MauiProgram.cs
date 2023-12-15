@@ -1,4 +1,5 @@
 ﻿using MPowerKit.Navigation;
+using MPowerKit.Navigation.Popups;
 using MPowerKit.Navigation.Utilities;
 using MPowerKit.Regions;
 
@@ -18,9 +19,11 @@ public static class MauiProgram
                     s.RegisterForNavigation<MainPage>();
                     s.RegisterForNavigation<NewPage1>();
                     s.RegisterForNavigation<NewContent1>();
+                    s.RegisterForNavigation<PopupPageTest>();
                 })
+                .UsePopupNavigation()
                 .UsePageEventsInRegions()
-                .OnAppStart("NavigationPage/MainPage/NewPage1");
+                .OnAppStart("NavigationPage/MainPage");
             })
             .UseMPowerKitRegions()
             .ConfigureFonts(fonts =>

@@ -239,20 +239,7 @@ public class MvvmHelpers
                     break;
             }
 
-            var regionManager = ViewServiceProviderAttached.GetServiceScope(page)?.ServiceProvider.GetService<IRegionManager>();
-
-            if (regionManager is not null)
-            {
-                foreach (var region in regionManager.GetRegions(page))
-                {
-                    region.DestroyAll();
-                }
-            }
-
-            Destroy(page);
-
-            page.Behaviors?.Clear();
-            page.BindingContext = null;
+            DestroyPage(page);
 
             ViewServiceProviderAttached.GetServiceScope(page)?.Dispose();
         }
@@ -260,6 +247,24 @@ public class MvvmHelpers
         {
             throw new Exception($"Cannot destroy {page}.", ex);
         }
+    }
+
+    public static void DestroyPage(Page page)
+    {
+        var regionManager = ViewServiceProviderAttached.GetServiceScope(page)?.ServiceProvider.GetService<IRegionManager>();
+
+        if (regionManager is not null)
+        {
+            foreach (var region in regionManager.GetRegions(page))
+            {
+                region.DestroyAll();
+            }
+        }
+
+        Destroy(page);
+
+        page.Behaviors?.Clear();
+        page.BindingContext = null;
     }
 
     public static void Destroy(VisualElement element)
@@ -399,7 +404,7 @@ public class MvvmHelpers
     public static bool OnSystemBackButtonClick(Page page)
     {
         var handled = false;
-        InvokeViewAndViewModelAction<ISystemBackButtonClickAware>(page, v => handled |= v.OnSystemBackButtonClick());
+        InvokeViewAndViewModelAction<ISystemBackButtonClickAware>(page, v => handled |= handled || v.OnSystemBackButtonClick());
         return handled;
     }
 }

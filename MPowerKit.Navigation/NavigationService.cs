@@ -13,7 +13,7 @@ public class NavigationService : INavigationService
     public Guid CurrentWindowId => Window?.Id ?? Guid.Empty;
 
     private Window? _window;
-    protected Window? Window
+    public Window? Window
     {
         get
         {

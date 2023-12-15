@@ -3,6 +3,7 @@
 public interface INavigationService
 {
     Guid CurrentWindowId { get; }
+    Window? Window { get; }
 
     NavigationResult CloseWindow(Guid? windowId = null);
     ValueTask<NavigationResult> OpenNewWindowAsync(string uri, INavigationParameters? parameters = null);
