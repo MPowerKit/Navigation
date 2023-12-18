@@ -17,7 +17,7 @@ public class PopupNavigationService : IPopupNavigationService
         PageAccessor = pageAccessor;
     }
 
-    public virtual async Task<PopupResult> ShowAwaitablePopupAsync(
+    public virtual async ValueTask<PopupResult> ShowAwaitablePopupAsync(
         string popupName,
         INavigationParameters? parameters = null,
         bool animated = true)
@@ -43,7 +43,7 @@ public class PopupNavigationService : IPopupNavigationService
         }
     }
 
-    public virtual async Task<NavigationResult> ShowPopupAsync(
+    public virtual async ValueTask<NavigationResult> ShowPopupAsync(
         string popupName,
         INavigationParameters? parameters = null,
         bool animated = true,
@@ -107,7 +107,7 @@ public class PopupNavigationService : IPopupNavigationService
         }
     }
 
-    public virtual async Task<NavigationResult> HidePopupAsync(bool animated = true)
+    public virtual async ValueTask<NavigationResult> HidePopupAsync(bool animated = true)
     {
         try
         {
@@ -131,7 +131,7 @@ public class PopupNavigationService : IPopupNavigationService
         }
     }
 
-    public virtual async Task<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true)
+    public virtual async ValueTask<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true)
     {
         try
         {
