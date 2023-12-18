@@ -1,4 +1,6 @@
-﻿namespace MPowerKit.Navigation.Popups;
+﻿using MPowerKit.Navigation.Popups;
+
+namespace MPowerKit.Navigation.Awares;
 
 public interface IPopupDialogAware
 {

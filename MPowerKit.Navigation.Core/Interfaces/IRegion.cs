@@ -4,6 +4,7 @@ public interface IRegion
 {
     NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters);
     NavigationResult Push(string viewName, INavigationParameters? parameters);
+    NavigationResult PushBackwards(string viewName, INavigationParameters? parameters);
     NavigationResult GoBack(INavigationParameters? parameters);
     NavigationResult GoForward(INavigationParameters? parameters);
     bool CanGoBack();

@@ -1,6 +1,7 @@
-﻿using MPowerKit.Navigation.Utilities;
+﻿using MPowerKit.Navigation.Awares;
+using MPowerKit.Navigation.Interfaces;
+using MPowerKit.Navigation.Utilities;
 using MPowerKit.Navigation.WindowInfrastructure;
-using MPowerKit.Popups;
 
 namespace MPowerKit.Navigation.Popups;
 
@@ -15,7 +16,9 @@ public class MPowerKitPopupsWindow : MPowerKitWindow
 
     protected override bool OnBackButtonClicked()
     {
-        var popup = PopupService.PopupStack.FirstOrDefault(p => p.Window == this);
+        var popupService = this.Handler.MauiContext.Services.GetRequiredService<INavigationPopupService>();
+
+        var popup = popupService.PopupStack.FirstOrDefault(p => p.Window == this);
 
         if (popup is not null)
         {
@@ -26,7 +29,7 @@ public class MPowerKitPopupsWindow : MPowerKitWindow
             {
                 if (aware?.RequestClose is not null && !handled)
                 {
-                    aware?.RequestClose((new Confirmation { Confirmed = false }, true));
+                    aware?.RequestClose((new Confirmation(false, null), true));
                     handled = true;
                 }
             });

@@ -1,6 +1,17 @@
-﻿using MPowerKit.Navigation.Interfaces;
+﻿using MPowerKit.Navigation;
+using MPowerKit.Navigation.Interfaces;
 
 namespace MPowerKit;
+
+public static class NavigationParametersExtensions
+{
+    public static NavigationDirection GetNavigationDirection(this INavigationParameters? parameters)
+    {
+        if (parameters is null) return NavigationDirection.None;
+
+        return parameters.GetValue<NavigationDirection>(KnownNavigationParameters.NavigationDirection);
+    }
+}
 
 public class NavigationParameters : Dictionary<string, object>, INavigationParameters
 {

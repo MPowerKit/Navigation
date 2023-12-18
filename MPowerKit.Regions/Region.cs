@@ -107,6 +107,44 @@ public class Region : IRegion
         }
     }
 
+    public virtual NavigationResult PushBackwards(string viewName, INavigationParameters? parameters)
+    {
+        parameters ??= new NavigationParameters();
+
+        try
+        {
+            var view = InitView(viewName, parameters);
+
+            var index = 0;
+
+            parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+
+            if (CurrentView is not null)
+            {
+                NavigatedRecursively(parameters, false);
+                index = RegionStack.IndexOf(CurrentView);
+            }
+
+            var viewsToRemove = RegionStack.Take(index).Reverse().ToList();
+
+            RegionStack.Insert(index, view);
+            CurrentView = view;
+            NavigatedRecursively(parameters, true);
+
+            foreach (var item in viewsToRemove)
+            {
+                RegionStack.Remove(item);
+                DestroyRecursively(item);
+            }
+
+            return new NavigationResult(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new NavigationResult(false, ex);
+        }
+    }
+
     protected virtual View InitView(string viewName, INavigationParameters parameters)
     {
         var view = (ServiceProvider.GetViewAndViewModel(viewName) as View)!;
@@ -226,17 +264,17 @@ public class Region : IRegion
 
     public virtual void DestroyRecursively(VisualElement view)
     {
-        foreach (var region in RegionManager.GetRegions(RegionHolder))
+        foreach (var region in RegionManager.GetRegions(view))
         {
             region.DestroyAll();
         }
 
-        if (CurrentView is null) return;
+        if (view is null) return;
 
-        MvvmHelpers.Destroy(CurrentView);
+        MvvmHelpers.Destroy(view);
 
-        CurrentView.Behaviors?.Clear();
-        CurrentView.BindingContext = null;
+        view.Behaviors?.Clear();
+        view.BindingContext = null;
     }
 
     public virtual void OnWindowLifecycleRecursively(bool resume)

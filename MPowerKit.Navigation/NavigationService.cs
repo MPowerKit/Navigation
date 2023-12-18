@@ -271,6 +271,11 @@ public class NavigationService : INavigationService
 
             var isAbsoluteNavigation = uri.IsAbsoluteUri || Window?.Page is null;
 
+            if (!isAbsoluteNavigation && modal)
+            {
+                parameters.Add(KnownNavigationParameters.IsNavigatedModally, modal);
+            }
+
             var pages = await ConstructPages(uri, parameters, isAbsoluteNavigation);
 
             if (isAbsoluteNavigation)
@@ -279,7 +284,6 @@ public class NavigationService : INavigationService
             }
             else if (modal)
             {
-                parameters.Add(KnownNavigationParameters.IsNavigatedModally, modal);
                 await DoModalPush(pages[0]!, parameters, animated);
             }
             else

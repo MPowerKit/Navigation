@@ -1,4 +1,5 @@
-﻿using MPowerKit.Navigation.Interfaces;
+﻿using MPowerKit.Navigation.Awares;
+using MPowerKit.Navigation.Interfaces;
 using MPowerKit.Navigation.Utilities;
 using MPowerKit.Popups;
 using MPowerKit.Popups.Interfaces;
@@ -10,13 +11,13 @@ public class PopupNavigationService : IPopupNavigationService
     protected IPopupService PopupService { get; }
     protected IPageAccessor PageAccessor { get; }
 
-    public PopupNavigationService(IPopupService popupService, IPageAccessor pageAccessor)
+    public PopupNavigationService(INavigationPopupService popupService, IPageAccessor pageAccessor)
     {
         PopupService = popupService;
         PageAccessor = pageAccessor;
     }
 
-    public virtual async Task<PopupResult> ShowPopupAsync(
+    public virtual async Task<PopupResult> ShowAwaitablePopupAsync(
         string popupName,
         INavigationParameters? parameters = null,
         bool animated = true)
@@ -71,10 +72,9 @@ public class PopupNavigationService : IPopupNavigationService
 
                     e.Handled = true;
 
-                    await PopupService.HidePopupAsync(page, true);
-
-                    closeAction?.Invoke(new Confirmation() { Confirmed = false });
+                    closeAction?.Invoke(new Confirmation(false, null));
                     page.BackgroundClicked -= Page_BackgroundClicked;
+                    await this.HidePopupAsync(page, true);
                 }
                 catch { }
             }
@@ -90,8 +90,8 @@ public class PopupNavigationService : IPopupNavigationService
                     {
                         try
                         {
-                            await this.HidePopupAsync(page, close.Animated);
                             closeAction?.Invoke(close.Confirmation);
+                            await this.HidePopupAsync(page, close.Animated);
                         }
                         catch { }
                     };
@@ -111,14 +111,14 @@ public class PopupNavigationService : IPopupNavigationService
     {
         try
         {
-            if (MPowerKit.Popups.PopupService.PopupStack.Count == 0)
+            if (PopupService.PopupStack.Count == 0)
             {
                 throw new InvalidOperationException("Popup stack is empty");
             }
             var window = (PageAccessor.Page?.Window)
                 ?? throw new InvalidOperationException("No parent window found");
 
-            var page = MPowerKit.Popups.PopupService.PopupStack.LastOrDefault(p => p.Window == window)
+            var page = PopupService.PopupStack.LastOrDefault(p => p.Window == window)
                 ?? throw new InvalidOperationException("No popup shown from current context");
 
             await HidePopupAsync(page, animated);
@@ -135,7 +135,7 @@ public class PopupNavigationService : IPopupNavigationService
     {
         try
         {
-            if (MPowerKit.Popups.PopupService.PopupStack.Count == 0)
+            if (PopupService.PopupStack.Count == 0)
             {
                 throw new InvalidOperationException("Popup stack is empty");
             }
