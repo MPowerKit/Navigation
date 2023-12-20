@@ -48,7 +48,8 @@ public class NavigationService : INavigationService
             windowId ??= CurrentWindowId;
 
             var window = WindowManager.Windows.FirstOrDefault(x => x.Id == windowId)
-                ?? throw new ArgumentException("Invalid window Id");
+                ?? WindowManager.Windows.LastOrDefault()
+                ?? throw new ArgumentException("Window not found");
 
             MvvmHelpers.DestroyAllPages(window.Page!);
 

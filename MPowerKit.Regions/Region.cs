@@ -12,16 +12,20 @@ public class Region : IRegion
 
     protected ContentView? RegionHolder => RegionAccessor.RegionHolder;
 
-    protected IList<VisualElement> RegionStack { get; } = [];
+    protected Grid StackContainer { get; } = [];
+
+    protected IList<VisualElement> RegionStack => StackContainer.Children.OfType<VisualElement>().ToList();
 
     protected VisualElement? CurrentView
     {
-        get => RegionHolder?.Content;
+        get => RegionStack.FirstOrDefault(c => c.IsVisible);
         set
         {
-            if (RegionHolder is null) return;
+            var cv = CurrentView;
 
-            RegionHolder.Content = value as View;
+            if (cv is not null) cv.IsVisible = false;
+
+            if (value is not null) value.IsVisible = true;
         }
     }
 
@@ -32,6 +36,8 @@ public class Region : IRegion
         ServiceProvider = serviceProvider;
         RegionManager = regionManager;
         RegionAccessor = regionAccessor;
+
+        RegionHolder.Content = StackContainer;
     }
 
     public virtual NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters)
@@ -51,13 +57,13 @@ public class Region : IRegion
                 NavigatedRecursively(parameters, false);
             }
 
-            RegionStack.Add(view);
+            StackContainer.Children.Add(view);
             CurrentView = view;
             NavigatedRecursively(parameters, true);
 
             foreach (var item in viewsToRemove)
             {
-                RegionStack.Remove(item);
+                StackContainer.Children.Remove(item);
                 DestroyRecursively(item);
             }
 
@@ -89,13 +95,13 @@ public class Region : IRegion
 
             var viewsToRemove = RegionStack.Skip(index + 1).Reverse().ToList();
 
-            RegionStack.Add(view);
+            StackContainer.Children.Add(view);
             CurrentView = view;
             NavigatedRecursively(parameters, true);
 
             foreach (var item in viewsToRemove)
             {
-                RegionStack.Remove(item);
+                StackContainer.Children.Remove(item);
                 DestroyRecursively(item);
             }
 
@@ -127,13 +133,13 @@ public class Region : IRegion
 
             var viewsToRemove = RegionStack.Take(index).Reverse().ToList();
 
-            RegionStack.Insert(index, view);
+            StackContainer.Children.Insert(index, view);
             CurrentView = view;
             NavigatedRecursively(parameters, true);
 
             foreach (var item in viewsToRemove)
             {
-                RegionStack.Remove(item);
+                StackContainer.Children.Remove(item);
                 DestroyRecursively(item);
             }
 
