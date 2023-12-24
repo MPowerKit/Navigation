@@ -38,6 +38,21 @@ public class RegionManager : IRegionManager
                 ra.RegionHolder = regionHolder;
 
                 ViewServiceProviderAttached.SetServiceScope(regionHolder, scope);
+
+                var parentPage = MvvmHelpers.GetParentOfTypeOrSelf<Page>(regionHolder);
+                if (parentPage is not null)
+                {
+                    var pageAccessor = ViewServiceProviderAttached.GetServiceScope(parentPage)?.ServiceProvider?.GetService<IPageAccessor>();
+                    if (pageAccessor is not null)
+                    {
+                        var pa = scope.ServiceProvider.GetService<IPageAccessor>();
+                        if (pa is not null)
+                        {
+                            pa.Page = pageAccessor.Page;
+                            pa.SegmentName = pageAccessor.SegmentName;
+                        }
+                    }
+                }
             }
 
             var region = scope.ServiceProvider.GetRequiredService<IRegion>();

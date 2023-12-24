@@ -18,10 +18,10 @@ public class Region : IRegion
 
     protected VisualElement? CurrentView
     {
-        get => RegionStack.FirstOrDefault(c => c.IsVisible);
+        get => RegionStack.SingleOrDefault(c => c.IsVisible);
         set
         {
-            var cv = CurrentView;
+            var cv = RegionStack.FirstOrDefault(c => c.IsVisible && c != value);
 
             if (cv is not null) cv.IsVisible = false;
 

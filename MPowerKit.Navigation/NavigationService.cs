@@ -69,7 +69,7 @@ public class NavigationService : INavigationService
         {
             var currentPage = GetCurrentPage()!;
 
-            var flyoutPage = MvvmHelpers.GetParentPageOfType<FlyoutPage>(currentPage)
+            var flyoutPage = MvvmHelpers.GetParentOfTypeOrSelf<FlyoutPage>(currentPage)
                 ?? throw new InvalidOperationException("There is no parent FlyoutPage");
 
             flyoutPage.IsPresented = isPresented;
@@ -90,7 +90,7 @@ public class NavigationService : INavigationService
         {
             var currentPage = GetCurrentPage()!;
 
-            var tabbedPage = MvvmHelpers.GetParentPageOfType<TabbedPage>(currentPage)
+            var tabbedPage = MvvmHelpers.GetParentOfTypeOrSelf<TabbedPage>(currentPage)
                 ?? throw new InvalidOperationException("There is no parent TabbedPage to select page on it");
 
             Page pageNavigateFrom = tabbedPage.CurrentPage;

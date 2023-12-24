@@ -52,14 +52,14 @@ public class MvvmHelpers
         return GetFarthestDirectParentPageOrSelf((page.Parent as Page)!);
     }
 
-    public static T? GetParentPageOfType<T>(Page? page) where T : Page
+    public static T? GetParentOfTypeOrSelf<T>(VisualElement? element) where T : VisualElement
     {
-        while (page is not (T or null))
+        while (element is not (T or null))
         {
-            page = page.Parent as Page;
+            element = element.Parent as VisualElement;
         }
 
-        return page as T;
+        return element as T;
     }
 
     public static Page GetRootPageBeforeWindowForPage(Page page)
