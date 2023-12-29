@@ -78,11 +78,6 @@ await _popupNavigationService.HidePopupAsync();
 ```csharp
 ValueTask<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true);
 
-YourCustomPopup _popup;
-
-await _popupService.ShowPopupAsync(_popup);
-
-await _popupService.ShowPopupAsync(_popup, false);
 ```
 https://github.com/MPowerKit/Navigation/assets/102964211/2a0003c2-d6a8-4a6a-91f8-98fd46e8bd71
 
