@@ -1,86 +1,114 @@
-.NET MAUI MVVM navigation framework. It supports regular/modal navigation, opening/closing windows, regions
+# MPowerKit .NET MAUI MVVM navigation framework. 
 
-# MPowerKit.Navigation.Popups
+#### Supports regular/modal navigation, opening/closing windows, multiple windows, regions, popups
 
-.NET MAUI popup library which allows you to open MAUI pages as a popup. Also the library allows you to use very simple and flexible animations for showing popup pages.
+## Available Nugets
 
-[![NuGet](https://github.com/MPowerKit/Navigation/tree/main/MPowerKit.Navigation.Popups)
+| Framework | Nuget |
+|-|-|
+| [MPowerKit.Navigation.Core](#MPowerKit.Navigation.Core) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Core)](https://www.nuget.org/packages/MPowerKit.Navigation.Core) |
+| [MPowerKit.Navigation](#MPowerKit.Navigation) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation)](https://www.nuget.org/packages/MPowerKit.Navigation) |
+| [MPowerKit.Navigation.Popups](#MPowerKit.Navigation.Popups) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Popups)](https://www.nuget.org/packages/MPowerKit.Navigation.Popups) |
+| [MPowerKit.Navigation.Regions](#MPowerKit.Navigation.Regions) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Regions)](https://www.nuget.org/packages/MPowerKit.Regions) |
 
-Inspired by [Rg.Plugins.Popup](https://github.com/rotorgames/Rg.Plugins.Popup) and [Mopups](https://github.com/LuckyDucko/Mopups), but implementation is completely different. 
+## MPowerKit.Navigation.Core
 
-- It has almost the same PopupPage API as packages above, but improved animations, removed redundant properties as ```KeyboardOffset```, changed names of some properties. 
+WIP
 
-- Improved code and fixed some known bugs, eg Android window insets (system padding) or animation flickering. 
+## MPowerKit.Navigation
 
-- Changed API of ```PopupService```, now you have an ability to choose a window to show/hide popup on.
+WIP
 
-- Under the hood platform specific code does not use custom renderers for ```PopupPage```.
+## MPowerKit.Navigation.Popups
 
-- Hiding keyboard when tapping anywhere on popup except entry field
+This library based on [MPowerKit.Navigation](#MPowerKit.Navigation) and [MPowerKit.Popups](https://github.com/MPowerKit/Popups) libraries
 
-- ```PopupStack``` is not static from now.
+Main unit of work of this library is ```IPopupNavigationService```. Under the hood it is registered as scoped service (NOT SINGLETONE), which means that it knows from which page it was opened to know the parent window it is attached to.
+So, in theory you can open different popups in different windows in same time.
 
-- All API's are public or protected from now, so you can easily override and change implementation as you want
+### Setup
 
-## Supported Platforms
-
-* .NET8
-* .NET8 for Android (min 23)
-* .NET8 for iOS (min 13.0)
-* .NET8 for MacCatalyst (min 13.1)
-* .NET8 for Windows (min 10.0.17763.0)
-
-Note: .NET8 for Tizen is not supported, but your PRs are welcome.
-
-## Setup
-
-Add ```UsePopupNavigation()``` to your MauiProgram.cs file as next
+Add ```UsePopupNavigation()``` to ```MPowerKitBuilder``` in your MauiProgram.cs file as next
 
 ```csharp
- builder
- .UseMauiApp<App>()
- .UseMPowerKit(b =>
- {
-   b.ConfigureServices(s =>
- {
-   s.RegisterForNavigation<MainPage>();
-   s.RegisterForNavigation<PopupPageTest>();
+    builder
+    .UseMauiApp<App>()
+    .UseMPowerKit(mpowerBuilder =>
+    {
+        mpowerBuilder.ConfigureServices(s =>
+        {
+            s.RegisterForNavigation<MainPage>();
+            s.RegisterForNavigation<TestPopupPage>();
+        })
+        .UsePopupNavigation();
+    })
+    .OnAppStart("NavigationPage/MainPage");
+```
+
+When you specify ```.UsePopupNavigation()``` it registers ```MPowerKitPopupsWindow``` as main class for every window, it is responsible for system back button.
+It inherits ```MPowerKitWindow``` which is main class for window in [MPowerKit.Navigation](#MPowerKit.Navigation), it also responsible for system back button on every platform, even in mac and ios (top-left back button on the page's toolbar)
+
+All popup pages should inherit ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
+
+##### Register your popup pages
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.RegisterForNavigation<TestPopupPage>();
 })
-  .UsePopupNavigation()
-  .OnAppStart("NavigationPage/MainPage");
 ```
 
-Show Popups:
+- The popup will be resolved by it's string name
+- No view model is secified, which means it has ```BindingContext``` set to ```new object();```
+
+or
 
 ```csharp
-
-ValueTask<NavigationResult> ShowPopupAsync(string popupName, INavigationParameters? parameters = null, bool animated = true, Action<Confirmation>? closeAction = null);
-
-await _popupService.ShowPopupAsync("PopupPageTest", null, true);
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.RegisterForNavigation<TestPopupPage, TestPopupViewModel>();
+})
 ```
 
-To show Confirmation Popup:
+- The popup will be resolved by it's string name
+- The view model is ```TestPopupViewModel```
 
+or
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.RegisterForNavigation<TestPopupPage, TestPopupViewModel>("TheAssociationNameForYourPopup");
+})
+```
+
+- The popup will be resolved by association name, which is preferred way
+- The view model is ```TestPopupViewModel```
+
+### Usage
+
+Inject ```IPopupNavigationService``` to your page's or viewmodel's contructor
+
+```IPopupNavigationService``` describes 4 methods:
+
+##### Show 'fire-and-forget' popup:
+```csharp
+ValueTask<NavigationResult> ShowPopupAsync(string popupName, INavigationParameters? parameters = null, bool animated = true, Action<Confirmation>? closeAction = null);
+```
+When you invoke this method it will show the popup and main thread will continue doing it's very important work. 
+You can provide close callback which accepts ```Confirmation``` object with boolean whether confirmed or not and ```INavigationParameters``` parameters.
+
+The result of showing popup is ```NavigationResult```
+
+##### Show awaitable popup:
 ```csharp
 ValueTask<PopupResult> ShowAwaitablePopupAsync(string popupName, INavigationParameters? parameters = null, bool animated = true);
-
-await _popupService.ShowAwaitablePopupAsync("PopupPageTest", null, true);
 ```
+When you invoke this method it will show the popup and it will await until user interaction on popup.
 
-Hide Popups:
-
-```csharp
-ValueTask<NavigationResult> HidePopupAsync(bool animated = true);
-
-await _popupNavigationService.HidePopupAsync();
-```
-
-```csharp
-ValueTask<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true);
-
-```
 https://github.com/MPowerKit/Navigation/assets/102964211/2a0003c2-d6a8-4a6a-91f8-98fd46e8bd71
 
+## MPowerKit.Navigation.Regions
 
-
-
+WIP
