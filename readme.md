@@ -149,8 +149,6 @@ ValueTask<PopupResult> ShowAwaitablePopupAsync(string popupName, INavigationPara
 When you invoke this method it will show the popup and it will await until the popup is closed.
 The reslut of this method is ```PopupResult```. ```PopupResult``` is inherited from ```NavigationResult```. It has extra property for ```Confirmation``` object to know how the popup was closed.
 
-https://github.com/MPowerKit/Navigation/assets/102964211/2a0003c2-d6a8-4a6a-91f8-98fd46e8bd71
-
 ##### Hide the last popup from popup stack:
 
 ```csharp
@@ -167,6 +165,8 @@ ValueTask<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true)
 
 Hides the specified popup if it was opened.
 The difference with [MPowerKit.Popups](https://github.com/MPowerKit/Popups) that it invokes all necessary aware interfaces you specified for your popup or it's viewmodel.
+
+https://github.com/MPowerKit/Navigation/assets/102964211/2a0003c2-d6a8-4a6a-91f8-98fd46e8bd71
 
 ## MPowerKit.Navigation.Regions
 
