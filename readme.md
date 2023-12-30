@@ -6,10 +6,10 @@
 
 | Framework | Nuget |
 |-|-|
-| [MPowerKit.Navigation.Core](#MPowerKit.Navigation.Core) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Core)](https://www.nuget.org/packages/MPowerKit.Navigation.Core) |
-| [MPowerKit.Navigation](#MPowerKit.Navigation) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation)](https://www.nuget.org/packages/MPowerKit.Navigation) |
-| [MPowerKit.Navigation.Popups](#MPowerKit.Navigation.Popups) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Popups)](https://www.nuget.org/packages/MPowerKit.Navigation.Popups) |
-| [MPowerKit.Navigation.Regions](#MPowerKit.Navigation.Regions) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Regions)](https://www.nuget.org/packages/MPowerKit.Regions) |
+| [MPowerKit.Navigation.Core](#MPowerKitNavigationCore) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Core)](https://www.nuget.org/packages/MPowerKit.Navigation.Core) |
+| [MPowerKit.Navigation](#MPowerKitNavigation) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation)](https://www.nuget.org/packages/MPowerKit.Navigation) |
+| [MPowerKit.Navigation.Popups](#MPowerKitNavigationPopups) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Popups)](https://www.nuget.org/packages/MPowerKit.Navigation.Popups) |
+| [MPowerKit.Navigation.Regions](#MPowerKitNavigationRegions) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Regions)](https://www.nuget.org/packages/MPowerKit.Regions) |
 
 ## MPowerKit.Navigation.Core
 
