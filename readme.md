@@ -28,9 +28,9 @@ This library based on [MPowerKit.Navigation](#MPowerKit.Navigation) and [MPowerK
 Add ```UsePopupNavigation()``` to ```MPowerKitBuilder``` in your MauiProgram.cs file as next
 
 ```csharp
-    builder
+builder
     .UseMauiApp<App>()
-    .UseMPowerKit(mpowerBuilder =>
+    .UseMPowerKitNavigation(mpowerBuilder =>
     {
         mpowerBuilder.ConfigureServices(s =>
         {
@@ -83,7 +83,7 @@ mpowerBuilder.ConfigureServices(s =>
 
 ### Usage
 
-All popup pages should inherit from ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
+Each popup page should inherit from ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
 
 #### IPopupDialogAware
 
@@ -168,4 +168,131 @@ The difference with [MPowerKit.Popups](https://github.com/MPowerKit/Popups) that
 
 ## MPowerKit.Navigation.Regions
 
-WIP
+Like [MPowerKit.Navigation](#MPowerKit.Navigation) Regions library is very similar to [Prism's](https://github.com/PrismLibrary/Prism). It has same sense, but different implementation.
+
+Shortly what it is: 
+In MAUI you can navigate only through pages, but what if you need to have big page with few different sections, let's call them, regions. For example: [TabView](https://github.com/MPowerKit/TabView) or some desktop screen with sections. Do we need to keep all logic in one viewmodel? - With regions no.
+It gives you simple and flexible way to navigate to the regions (sections on UI) from your page or viewmodel, or even from another region.
+
+### Setup
+
+Add ```UseMPowerKitRegions()``` to your MauiProgram.cs file as next
+
+```csharp
+builder
+    .UseMauiApp<App>()
+    .UseMPowerKitRegions();
+```
+
+Regions can work with(out) [MPowerKit.Navigation](#MPowerKit.Navigation) or [MPowerKit.Navigation.Popups](#MPowerKit.Navigation.Popups).
+
+```csharp
+builder
+    .UseMauiApp<App>()
+    .UseMPowerKitNavigation(mpowerBuilder =>
+    {
+        mpowerBuilder.ConfigureServices(s =>
+        {
+            s.RegisterForNavigation<MainPage>();
+            s.RegisterForNavigation<RegionView1>();
+        })
+        .OnAppStart("NavigationPage/MainPage");
+    })
+    .UseMPowerKitRegions();
+```
+
+Note: if you are using regions in couple with [MPowerKit.Navigation](#MPowerKit.Navigation) you can specify whether you want your region views get parent page's events like navigation, destroy, lifecycle etc.
+Just add ```UsePageEventsInRegions()``` to ```mpowerBuilder```
+
+```csharp
+builder
+    .UseMauiApp<App>()
+    .UseMPowerKitNavigation(mpowerBuilder =>
+    {
+        mpowerBuilder.ConfigureServices(s =>
+        {
+            s.RegisterForNavigation<MainPage>();
+            s.RegisterForNavigation<RegionView1>();
+        })
+        .UsePageEventsInRegions()
+        .OnAppStart("NavigationPage/MainPage");
+    })
+    .UseMPowerKitRegions();
+```
+
+#### Register your region views
+
+```csharp
+builder.Services
+    .RegisterForNavigation<RegionView1>();
+```
+
+- The region view will be resolved by it's string name
+- No view model is specified, which means it has ```BindingContext``` set to ```new object();```
+
+or
+
+```csharp
+builder.Services
+    .RegisterForNavigation<RegionView1, Region1ViewModel>();
+```
+
+- The region view will be resolved by it's string name
+- The view model is ```Region1ViewModel```
+
+or
+
+```csharp
+builder.Services
+    .RegisterForNavigation<RegionView1, Region1ViewModel>("RegionViewAssociationName");
+```
+
+- The region view will be resolved by association name, which is preferred way
+- The view model is ```Region1ViewModel```
+
+### Usage
+
+Each region should have the parent container which will be the so-called region holder. This region holder has to be ```typeof(ContentView)```.
+
+##### In your xaml:
+
+add namespace
+
+```csharp
+xmlns:regions="clr-namespace:MPowerKit.Regions;assembly=MPowerKit.Regions"
+```
+
+and then
+
+```csharp
+<ContentView regions:RegionManager.RegionName="YourVeryMeaningfulRegionName" />
+```
+
+or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic name, for example if you need to bind it to some ID.
+
+```csharp
+<ContentView regions:RegionManager.RegionName="{Binding DynamicString}" />
+```
+
+This is very helpful if you use it, for example, with [TabView](https://github.com/MPowerKit/TabView) and you need to open new tab with tab specific dynamic data which has region(s). With static names you are not able to do such trick.
+
+**!!! Important: the region names have to be unique through entire app or it will crash.**
+
+#### IRegionManager
+
+This interface has 2 methods:
+1. ```NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);```
+It does navigation to empty region holder, creates ```IRegion``` object which describes the region with region stack and pushes chosen view to the region. Or if the region holder contains any child view it will clear region stack and push new view to the region.
+2. ```IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);```
+Get all child regions for chosen region holder. It can be useful if you need to clean all resources and invoke lificycle events for regions.
+
+##### Then from your view or viewmodel:
+
+```csharp
+<ContentView regions:RegionManager.RegionName="{Binding DynamicString}" />
+```
+
+
+To remove region holder from region registrations there is hidden method
+
+```RegionManager.RemoveHolder(string? key)```

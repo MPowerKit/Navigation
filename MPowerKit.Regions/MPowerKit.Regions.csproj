@@ -14,7 +14,7 @@
 		<Copyright>MPowerKit</Copyright>
 		<PackageProjectUrl>https://github.com/MPowerKit/Navigation</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/MPowerKit/Navigation</RepositoryUrl>
-		<PackageTags>maui;mvvm;prism;lightmvvm;navigation;region;modal</PackageTags>
+		<PackageTags>maui;mvvm;prism;lightmvvm;navigation;region;modal;section</PackageTags>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 	</PropertyGroup>

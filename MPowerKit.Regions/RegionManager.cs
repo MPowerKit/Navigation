@@ -15,7 +15,7 @@ public class RegionManager : IRegionManager
         ServiceProvider = serviceProvider;
     }
 
-    public virtual NavigationResult RequestNavigate(string regionName, string viewName, INavigationParameters? parameters = null)
+    public virtual NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null)
     {
         parameters ??= new NavigationParameters();
 

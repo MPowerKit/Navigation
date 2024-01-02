@@ -4,7 +4,7 @@ namespace MPowerKit.Navigation;
 
 public static class BuilderExtensions
 {
-    public static MauiAppBuilder UseMPowerKit(this MauiAppBuilder mauiAppBuilder, Action<MPowerKitMvvmBuilder> configureNavigation)
+    public static MauiAppBuilder UseMPowerKitNavigation(this MauiAppBuilder mauiAppBuilder, Action<MPowerKitMvvmBuilder> configureNavigation)
     {
         var navBuilder = new MPowerKitMvvmBuilder(mauiAppBuilder);
 

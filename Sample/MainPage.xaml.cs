@@ -22,7 +22,7 @@ public partial class MainPage : IInitializeAware
 
     public void Initialize(INavigationParameters parameters)
     {
-        _regionManager.RequestNavigate("MainRegion", "NewContent1", null);
+        _regionManager.NavigateTo("MainRegion", "NewContent1", null);
     }
 
     private async void OnCounterClicked(object sender, EventArgs e)
