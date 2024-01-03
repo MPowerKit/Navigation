@@ -201,8 +201,11 @@ builder
     .UseMPowerKitRegions();
 ```
 
-Note: if you are using regions in couple with [MPowerKit.Navigation](#MPowerKit.Navigation) you can specify whether you want your region views get parent page's events like navigation, destroy, lifecycle etc.
-Just add ```UsePageEventsInRegions()``` to ```mpowerBuilder```
+
+**Note: if you are using regions in couple with [MPowerKit.Navigation](#MPowerKit.Navigation) you can specify whether you want your region views get parent page's events like navigation, destroy, lifecycle etc.
+Just add ```UsePageEventsInRegions()``` to ```mpowerBuilder```**
+
+
 
 ```csharp
 builder
@@ -276,10 +279,15 @@ or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic n
 
 This is very helpful if you use it, for example, with [TabView](https://github.com/MPowerKit/TabView) and you need to open new tab with tab specific dynamic data which has region(s). With static names you are not able to do such trick.
 
+
 **!!! Important: the region names MUST be unique throughout the entire app or it will crash!!!**
 
+
 To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```.
-Note: you should not use it, if you specified ```UsePageEventsInRegions()```
+
+
+**Note: you should not use it, if you specified ```UsePageEventsInRegions()```**
+
 
 #### IRegionManager
 
