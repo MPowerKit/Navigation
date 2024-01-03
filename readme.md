@@ -276,7 +276,10 @@ or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic n
 
 This is very helpful if you use it, for example, with [TabView](https://github.com/MPowerKit/TabView) and you need to open new tab with tab specific dynamic data which has region(s). With static names you are not able to do such trick.
 
-**!!! Important: the region names have to be unique through entire app or it will crash.**
+*!!! Important: the region names have to be unique through entire app or it will crash.*
+
+To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```
+Note: you should not use it, if you specified ```UsePageEventsInRegions()```
 
 #### IRegionManager
 
@@ -284,15 +287,40 @@ This interface has 2 methods:
 1. ```NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);```
 It does navigation to empty region holder, creates ```IRegion``` object which describes the region with region stack and pushes chosen view to the region. Or if the region holder contains any child view it will clear region stack and push new view to the region.
 2. ```IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);```
-Get all child regions for chosen region holder. It can be useful if you need to clean all resources and invoke lificycle events for regions.
+Gets all child regions for chosen region holder. It can be useful if you need to clean all resources and invoke lificycle events for regions.
 
-##### Then from your view or viewmodel:
+##### Example
 
 ```csharp
-<ContentView regions:RegionManager.RegionName="{Binding DynamicString}" />
+IRegionManager _regionManager;
+
+_regionManger.NavigateTo("YourRegionName", "RegionViewAssociationName", optionalNavigationParametersObject);
 ```
 
+#### IRegion
 
-To remove region holder from region registrations there is hidden method
+This interface is registered as scoped service. It means that each region holder contains it's own ```IRegion``` object which can be injected into each region view it holds. This object is responsible for navigation inside the region it describes.
 
-```RegionManager.RemoveHolder(string? key)```
+Each region has it's region stack and ```CurrentView```. Region stack is just ```Grid``` with children. So it means that all of region views are currently attached to the visual tree but only one is visible. Visible region view is ```CurrentView```.
+
+This interface has 7 main methods:
+1. ```NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters);```
+Replaces entire region stack, calls all implemented aware interfaces and pushes new region view to the region holder.
+2. ```NavigationResult Push(string viewName, INavigationParameters? parameters);```
+Detects index of ```CurrentView``` in the stack, clears all view after ```CurrentView``` and pushes new view after ```CurrentView``` and makes it to be ```CurrentView```
+3. ```NavigationResult PushBackwards(string viewName, INavigationParameters? parameters);```
+Same as ```Push``` but clears all views before ```CurrentView``` in the stack and pushes new view before ```CurrentView``` and makes it to be ```CurrentView```.
+4. ```NavigationResult GoBack(INavigationParameters? parameters);```
+Checks whether it can navigate back through the region stack and does backwards navigation invoking ```INavigationAware``` interface.
+5. ```NavigationResult GoForward(INavigationParameters? parameters);```
+Same as ```GoBack``` but to the opposite direction.
+6. ```bool CanGoBack();```
+Checks whether it can navigate back through the region stack.
+7. ```bool CanGoForward();```
+Same as ```CanGoBack``` but to the opposite direction.
+
+Also, this interface has another few utility methods which invoke aware interfaces.
+
+Region views or their viewmodels can implement next aware interfaces: ```IInitializeAware```, ```INavigationAware```, ```IDestructible```, ```IWindowLifecycleAware```, ```IPageLificycleAware```
+
+To use ```IRegion``` object just inject it to your region view ot it's viewmodel and then you have control over your region stack.
