@@ -167,8 +167,8 @@ The difference with [MPowerKit.Popups](https://github.com/MPowerKit/Popups) that
 Like [MPowerKit.Navigation](#MPowerKit.Navigation) Regions library is very similar to [Prism's](https://github.com/PrismLibrary/Prism) one. It has same sense, but different implementation.
 
 Shortly what it is:
-In MAUI you can navigate only through pages, but what if you need to have big page with few different sections, let's call them, regions. For example: [TabView](https://github.com/MPowerKit/TabView) or some desktop screen with sections. Do we need to keep all logic in one viewmodel? - With regions no.
-It gives you simple and flexible way to navigate to the regions (sections on UI) from your page or viewmodel, or even from another region.
+In MAUI you can navigate only through pages, but what if you need to have big page with few different sections, let's call them, regions. For example: [TabView](https://github.com/MPowerKit/TabView) or some desktop screen with sections. Do we need to keep all logic in one god viewmodel? - With regions no.
+It gives you simple and flexible way to navigate to the regions (sections on UI) from your page or viewmodel, or even from another region. Each region can hold as much views as you like, but only one will be visible at the moment. And you can simply put all logic related to the section inside the region viewmodel. Regions can be recursive.
 
 ### Setup
 
