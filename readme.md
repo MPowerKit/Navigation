@@ -83,7 +83,7 @@ mpowerBuilder.ConfigureServices(s =>
 
 ### Usage
 
-Each popup page should inherit from ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
+Each popup page must inherit from ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
 
 #### IPopupDialogAware
 
@@ -256,13 +256,13 @@ Each region should have the parent container which will be the so-called region 
 
 ##### In your xaml:
 
-add namespace
+Firstly add namespace
 
 ```csharp
 xmlns:regions="clr-namespace:MPowerKit.Regions;assembly=MPowerKit.Regions"
 ```
 
-and then
+and then just simple to use
 
 ```csharp
 <ContentView regions:RegionManager.RegionName="YourVeryMeaningfulRegionName" />
@@ -276,18 +276,22 @@ or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic n
 
 This is very helpful if you use it, for example, with [TabView](https://github.com/MPowerKit/TabView) and you need to open new tab with tab specific dynamic data which has region(s). With static names you are not able to do such trick.
 
-*!!! Important: the region names have to be unique through entire app or it will crash.*
+<span style="color: yellow;">*\*\!* Important: the region names must be unique throughout the entire app or it will crash *\*\!* </span>
 
 To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```.
 Note: you should not use it, if you specified ```UsePageEventsInRegions()```
 
 #### IRegionManager
 
-This interface is registered as singletone and has 2 methods:
-1. ```NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);```
-It does navigation to empty region holder, creates ```IRegion``` object which describes the region with region stack and pushes chosen view to the region. Or if the region holder contains any child view it will clear region stack and push new view to the region.
-2. ```IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);```
-Gets all child regions for chosen region holder. It can be useful if you need to clean all resources and invoke lificycle events for regions.
+This interface is registered as a singleton and consists of two methods:
+
+1. `NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);`
+
+   This method performs navigation within an empty region holder. It creates an `IRegion` object that describes the region with a region stack and then pushes the chosen view into the region. If the region holder already contains child views, it will clear the region stack and push the new view into the region.
+
+2. `IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);`
+
+   This method retrieves all child regions associated with a chosen region holder. It can be particularly useful when you need to clean up resources and invoke lifecycle events for these regions.
 
 ##### Example
 
