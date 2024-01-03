@@ -276,7 +276,7 @@ or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic n
 
 This is very helpful if you use it, for example, with [TabView](https://github.com/MPowerKit/TabView) and you need to open new tab with tab specific dynamic data which has region(s). With static names you are not able to do such trick.
 
-<span style="color: yellow;">*\*\!* Important: the region names must be unique throughout the entire app or it will crash *\*\!* </span>
+**!!! Important: the region names MUST be unique throughout the entire app or it will crash!!!**
 
 To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```.
 Note: you should not use it, if you specified ```UsePageEventsInRegions()```
@@ -285,12 +285,14 @@ Note: you should not use it, if you specified ```UsePageEventsInRegions()```
 
 This interface is registered as a singleton and consists of two methods:
 
-1. `NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);`
-
+```csharp
+1. NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);
+```
    This method performs navigation within an empty region holder. It creates an `IRegion` object that describes the region with a region stack and then pushes the chosen view into the region. If the region holder already contains child views, it will clear the region stack and push the new view into the region.
-
-2. `IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);`
-
+   
+```csharp
+2. IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
+```
    This method retrieves all child regions associated with a chosen region holder. It can be particularly useful when you need to clean up resources and invoke lifecycle events for these regions.
 
 ##### Example
