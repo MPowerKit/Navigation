@@ -54,7 +54,7 @@ mpowerBuilder.ConfigureServices(s =>
 })
 ```
 
-- The popup will be resolved by it's _nameof()_
+- The popup will be resolved by it's ```nameof()```
 - No view model is specified, which means it has ```BindingContext``` set to ```new object();```
 
 or
@@ -66,7 +66,7 @@ mpowerBuilder.ConfigureServices(s =>
 })
 ```
 
-- The popup will be resolved by it's _nameof()_
+- The popup will be resolved by it's ```nameof()```
 - The view model is ```TestPopupViewModel```
 
 or
@@ -166,7 +166,7 @@ The difference with [MPowerKit.Popups](https://github.com/MPowerKit/Popups) that
 
 Like [MPowerKit.Navigation](#MPowerKit.Navigation) Regions library is very similar to [Prism's](https://github.com/PrismLibrary/Prism). It has same sense, but different implementation.
 
-Shortly what it is: 
+##### Shortly what it is
 In MAUI you can navigate only through pages, but what if you need to have big page with few different sections, let's call them, regions. For example: [TabView](https://github.com/MPowerKit/TabView) or some desktop screen with sections. Do we need to keep all logic in one viewmodel? - With regions no.
 It gives you simple and flexible way to navigate to the regions (sections on UI) from your page or viewmodel, or even from another region.
 
