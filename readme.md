@@ -133,7 +133,7 @@ Inject ```IPopupNavigationService``` to your page's or viewmodel's contructor.
 
 ```IPopupNavigationService``` describes 4 methods:
 
-##### Show 'fire-and-forget' popup:
+1. Show 'fire-and-forget' popup:
 ```csharp
 ValueTask<NavigationResult> ShowPopupAsync(string popupName, INavigationParameters? parameters = null, bool animated = true, Action<Confirmation>? closeAction = null);
 ```
@@ -142,27 +142,23 @@ You can provide close callback which accepts ```Confirmation``` object with bool
 it invokes all necessary aware interfaces you specified for your popup or it's viewmodel.
 The result of showing popup is ```NavigationResult```
 
-##### Show awaitable popup:
+2. Show awaitable popup:
 ```csharp
 ValueTask<PopupResult> ShowAwaitablePopupAsync(string popupName, INavigationParameters? parameters = null, bool animated = true);
 ```
 When you invoke this method it will show the popup and it will await until the popup is closed.
 The reslut of this method is ```PopupResult```. ```PopupResult``` is inherited from ```NavigationResult```. It has extra property for ```Confirmation``` object to know how the popup was closed.
 
-##### Hide the last popup from popup stack:
-
+3. Hide the last popup from popup stack:
 ```csharp
 ValueTask<NavigationResult> HidePopupAsync(bool animated = true);
 ```
-
 Hides the last popup available in the popup stack. The stack is controlled by the [MPowerKit.Popups](https://github.com/MPowerKit/Popups) framework.
 
-##### Hide specific popup:
-
+4. Hide specific popup:
 ```csharp
 ValueTask<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true);
 ```
-
 Hides the specified popup if it was opened.
 The difference with [MPowerKit.Popups](https://github.com/MPowerKit/Popups) that it invokes all necessary aware interfaces you specified for your popup or it's viewmodel.
 
@@ -201,11 +197,8 @@ builder
     .UseMPowerKitRegions();
 ```
 
-
 **Note: if you are using regions in couple with [MPowerKit.Navigation](#MPowerKit.Navigation) you can specify whether you want your region views get parent page's events like navigation, destroy, lifecycle etc.
 Just add ```UsePageEventsInRegions()``` to ```mpowerBuilder```**
-
-
 
 ```csharp
 builder
@@ -230,7 +223,7 @@ builder.Services
     .RegisterForNavigation<RegionView1>();
 ```
 
-- The region view will be resolved by it's _nameof()_
+- The region view will be resolved by it's ```nameof()```
 - No view model is specified, which means it has ```BindingContext``` set to ```new object();```
 
 or
@@ -240,7 +233,7 @@ builder.Services
     .RegisterForNavigation<RegionView1, Region1ViewModel>();
 ```
 
-- The region view will be resolved by it's _nameof()_
+- The region view will be resolved by it's ```nameof()```
 - The view model is ```Region1ViewModel```
 
 or
@@ -279,29 +272,29 @@ or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic n
 
 This is very helpful if you use it, for example, with [TabView](https://github.com/MPowerKit/TabView) and you need to open new tab with tab specific dynamic data which has region(s). With static names you are not able to do such trick.
 
-
 **!!! Important: the region names MUST be unique throughout the entire app or it will crash!!!**
-
 
 To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```.
 
-
-**Note: you SHOULD NOT use it, if you specified ```UsePageEventsInRegions()```**
-
+**Note: you should not use it, if you use [MPowerKit.Regions](#MPowerKit.Regions) in couple with [MPowerKit.Navigation](#MPowerKit.Navigation)**
 
 #### IRegionManager
 
-This interface is registered as a singleton and consists of two methods:
+Inject ```IRegionManager``` to your view's or viewmodel's contructor.
 
+This interface is registered as a singleton and describes 2 methods:
+
+1. New navigation to the region:
 ```csharp
-1. NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);
+NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);
 ```
-   This method performs navigation within an empty region holder. It creates an `IRegion` object that describes the region with a region stack and then pushes the chosen view into the region. If the region holder already contains child views, it will clear the region stack and push the new view into the region.
-   
+Performs navigation within an empty region holder. It creates an `IRegion` object that describes the region with a region stack and then pushes the chosen view into the region. If the region holder already contains child views, it will clear the region stack and push the new view into the region.
+
+2. Get all child regions for chosen view:
 ```csharp
-2. IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
+IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
 ```
-   This method retrieves all child regions associated with a chosen region holder. It can be particularly useful when you need to clean up resources and invoke lifecycle events for these regions.
+Retrieves all child regions associated with a chosen region holder. It can be particularly useful when you need to clean up resources and invoke lifecycle events for these regions.
 
 ##### Example
 
