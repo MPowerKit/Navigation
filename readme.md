@@ -278,12 +278,12 @@ This is very helpful if you use it, for example, with [TabView](https://github.c
 
 *!!! Important: the region names have to be unique through entire app or it will crash.*
 
-To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```
+To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```.
 Note: you should not use it, if you specified ```UsePageEventsInRegions()```
 
 #### IRegionManager
 
-This interface has 2 methods:
+This interface is registered as singletone and has 2 methods:
 1. ```NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);```
 It does navigation to empty region holder, creates ```IRegion``` object which describes the region with region stack and pushes chosen view to the region. Or if the region holder contains any child view it will clear region stack and push new view to the region.
 2. ```IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);```
