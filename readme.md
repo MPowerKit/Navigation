@@ -254,19 +254,19 @@ Each region should have the parent container which will be the so-called region 
 
 Firstly add namespace
 
-```csharp
+```xaml
 xmlns:regions="clr-namespace:MPowerKit.Regions;assembly=MPowerKit.Regions"
 ```
 
 and then just simple to use
 
-```csharp
+```xaml
 <ContentView regions:RegionManager.RegionName="YourVeryMeaningfulRegionName" />
 ```
 
 or, unlike [Prism](https://github.com/PrismLibrary/Prism), it can have dynamic name, for example if you need to bind it to some ID.
 
-```csharp
+```xaml
 <ContentView regions:RegionManager.RegionName="{Binding DynamicString}" />
 ```
 
@@ -306,11 +306,13 @@ _regionManger.NavigateTo("YourRegionName", "RegionViewAssociationName", optional
 
 #### IRegion
 
+To use ```IRegion``` object just inject it to your region view ot it's viewmodel and then you will have the control over your region stack.
+
 This interface is registered as scoped service. It means that each region holder contains it's own ```IRegion``` object which can be injected into each region view it holds. This object is responsible for navigation inside the region it describes.
 
 Each region has it's region stack and ```CurrentView```. Region stack is just ```Grid``` with children. So it means that all of region views are currently attached to the visual tree but only one is visible. Visible region view is ```CurrentView```.
 
-This interface has 7 main methods:
+This interface describes 7 main methods:
 1. ```NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters);```
 Replaces entire region stack, calls all implemented aware interfaces and pushes new region view to the region holder.
 2. ```NavigationResult Push(string viewName, INavigationParameters? parameters);```
@@ -326,8 +328,6 @@ Checks whether it can navigate back through the region stack.
 7. ```bool CanGoForward();```
 Same as ```CanGoBack``` but to the opposite direction.
 
-Also, this interface has another few utility methods which invoke aware interfaces.
+Also, this interface describes another few utility methods which invoke aware interfaces.
 
-Region views or their viewmodels can implement next aware interfaces: ```IInitializeAware```, ```INavigationAware```, ```IDestructible```, ```IWindowLifecycleAware```, ```IPageLificycleAware```
-
-To use ```IRegion``` object just inject it to your region view ot it's viewmodel and then you will have the control over your region stack.
+Region views or their viewmodels can implement next aware interfaces: ```IInitializeAware```, ```INavigationAware```, ```IDestructible```, ```IWindowLifecycleAware```, ```IPageLifecycleAware```
