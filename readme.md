@@ -54,7 +54,7 @@ mpowerBuilder.ConfigureServices(s =>
 })
 ```
 
-- The popup will be resolved by it's __nameof()__
+- The popup will be resolved by it's _nameof()_
 - No view model is specified, which means it has ```BindingContext``` set to ```new object();```
 
 or
@@ -66,7 +66,7 @@ mpowerBuilder.ConfigureServices(s =>
 })
 ```
 
-- The popup will be resolved by it's __nameof()__
+- The popup will be resolved by it's _nameof()_
 - The view model is ```TestPopupViewModel```
 
 or
@@ -230,7 +230,7 @@ builder.Services
     .RegisterForNavigation<RegionView1>();
 ```
 
-- The region view will be resolved by it's __nameof()__
+- The region view will be resolved by it's _nameof()_
 - No view model is specified, which means it has ```BindingContext``` set to ```new object();```
 
 or
@@ -240,7 +240,7 @@ builder.Services
     .RegisterForNavigation<RegionView1, Region1ViewModel>();
 ```
 
-- The region view will be resolved by it's __nameof()__
+- The region view will be resolved by it's _nameof()_
 - The view model is ```Region1ViewModel```
 
 or
