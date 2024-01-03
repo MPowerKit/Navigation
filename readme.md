@@ -313,19 +313,46 @@ This interface is registered as scoped service. It means that each region holder
 Each region has it's region stack and ```CurrentView```. Region stack is just ```Grid``` with children. So it means that all of region views are currently attached to the visual tree but only one is visible. Visible region view is ```CurrentView```.
 
 This interface describes 7 main methods:
-1. ```NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters);```
+1. Replace all
+```csharp
+NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters);```
+```
 Replaces entire region stack, calls all implemented aware interfaces and pushes new region view to the region holder.
-2. ```NavigationResult Push(string viewName, INavigationParameters? parameters);```
+
+2. Push new view
+```csharp
+NavigationResult Push(string viewName, INavigationParameters? parameters);
+```
 Detects index of ```CurrentView``` in the stack, clears all view after ```CurrentView``` and pushes new view after ```CurrentView``` and makes it to be ```CurrentView```
-3. ```NavigationResult PushBackwards(string viewName, INavigationParameters? parameters);```
+
+3. Push new view backwards 
+```csharp
+NavigationResult PushBackwards(string viewName, INavigationParameters? parameters);
+```
 Same as ```Push``` but clears all views before ```CurrentView``` in the stack and pushes new view before ```CurrentView``` and makes it to be ```CurrentView```.
-4. ```NavigationResult GoBack(INavigationParameters? parameters);```
+
+4. Go back through the stack
+```csharp
+NavigationResult GoBack(INavigationParameters? parameters);
+```
 Checks whether it can navigate back through the region stack and does backwards navigation invoking ```INavigationAware``` interface.
-5. ```NavigationResult GoForward(INavigationParameters? parameters);```
+
+5. Go forward through the stack
+```csharp
+NavigationResult GoForward(INavigationParameters? parameters);
+```
 Same as ```GoBack``` but to the opposite direction.
-6. ```bool CanGoBack();```
+
+6. Can go back
+```csharp
+bool CanGoBack();
+```
 Checks whether it can navigate back through the region stack.
-7. ```bool CanGoForward();```
+
+7. Can go forward
+```csharp
+bool CanGoForward();
+```
 Same as ```CanGoBack``` but to the opposite direction.
 
 Also, this interface describes another few utility methods which invoke aware interfaces.
