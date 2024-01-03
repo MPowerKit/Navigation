@@ -323,4 +323,4 @@ Also, this interface has another few utility methods which invoke aware interfac
 
 Region views or their viewmodels can implement next aware interfaces: ```IInitializeAware```, ```INavigationAware```, ```IDestructible```, ```IWindowLifecycleAware```, ```IPageLificycleAware```
 
-To use ```IRegion``` object just inject it to your region view ot it's viewmodel and then you have control over your region stack.
+To use ```IRegion``` object just inject it to your region view ot it's viewmodel and then you will have the control over your region stack.
