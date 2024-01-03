@@ -286,7 +286,7 @@ This is very helpful if you use it, for example, with [TabView](https://github.c
 To remove region holder from region registrations there is hidden method ```RegionManager.RemoveHolder(string? key)```.
 
 
-**Note: you should not use it, if you specified ```UsePageEventsInRegions()```**
+**Note: you SHOULD NOT use it, if you specified ```UsePageEventsInRegions()```**
 
 
 #### IRegionManager
