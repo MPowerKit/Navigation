@@ -8,7 +8,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>MPowerKit.Regions</Title>
-		<Version>1.1.5</Version>
+		<Version>1.1.6</Version>
 		<Authors>MPowerKit,Alex Dobrynin</Authors>
 		<Description>.NET MAUI MVVM navigation framework. It supports regular/modal navigation, opening/closing windows, regions</Description>
 		<Copyright>MPowerKit</Copyright>
@@ -17,6 +17,7 @@
 		<PackageTags>maui;mvvm;prism;lightmvvm;navigation;region;modal;section</PackageTags>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,6 +26,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\icon.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\LICENSE">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>

@@ -49,6 +49,7 @@ public class MPowerKitMvvmBuilder
         Services.RegisterBehavior<TabbedPage, TabbedPageActiveTabAwareBehavior>();
         Services.RegisterBehavior<FlyoutPage, FlyoutPageFlyoutPresentedAwareBehavior>();
         Services.RegisterForNavigation<NavigationPage>();
+        Services.RegisterForNavigation<TabNavigationPage>();
         Services.RegisterForNavigation<TabbedPage>();
         Services.RegisterForNavigation<FlyoutPage>();
     }

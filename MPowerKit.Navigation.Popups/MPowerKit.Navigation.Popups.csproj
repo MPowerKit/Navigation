@@ -16,7 +16,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>MPowerKit.Navigation.Popups</Title>
-		<Version>1.1.5</Version>
+		<Version>1.1.6</Version>
 		<Authors>MPowerKit,Alex Dobrynin</Authors>
 		<Description>.NET MAUI MVVM navigation framework. It supports regular/modal navigation, opening/closing windows, regions, popups</Description>
 		<Copyright>MPowerKit</Copyright>
@@ -25,6 +25,7 @@
 		<PackageTags>maui;mvvm;prism;lightmvvm;navigation;navigate;aware;region;modal;popup;rg;mopups</PackageTags>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -38,6 +39,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\icon.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\LICENSE">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>

@@ -2,6 +2,10 @@
 
 #### Supports regular/modal navigation, opening/closing windows, multiple windows, regions, popups
 
+Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
+
+##### Since Prism for .NET MAUI has some critical (for our company) bugs and different behavior comparing to Prism.Forms, we decided to write our own navigation framework. This library brings you the same principle for navigation througn the MAUI app as Prism, but has absolutely different implementation and a bit improved performance. It also brings (in our opinion) proper way to handle 'System back button' click, works nad has same behavior for all platforms.
+
 ## Available Nugets
 
 | Framework | Nuget |
@@ -13,7 +17,23 @@
 
 ## MPowerKit.Navigation.Core
 
-WIP
+This is the core library for [MPowerKit.Navigation](#MPowerKitNavigation) and other libraries. It contains core functionality, utility classes and interfaces.
+
+### Awares
+
+Same as in Prism, aware interfaces are here to know when and what page event happens.
+
+#### IInitializeAware
+
+It has only one interface method ```void Initialize(INavigationParameters parameters);```.
+This method is executed right after the page and it's viewmodel has been created. Executes for each page in navigation stack continuously in direct order. Accepts ```INavigationParameters``` as input arguments. Executed only once during the lifetime of the page.
+If you want your page or it's viewmodel know about this event, it must implement this interface.
+
+#### IDestructible
+
+It has only one interface method ```void Desctroy();```.
+This method is executed right after the page and it's viewmodel has been detached from visual tree and needs to be GCed. Executes for each page in navigation stack continuously in reverse order. Executed only once during the lifetime of the page.
+If you want your page or it's viewmodel know about this event, it must implement this interface.
 
 ## MPowerKit.Navigation
 
