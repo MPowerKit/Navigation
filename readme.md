@@ -26,14 +26,20 @@ Same as in Prism, aware interfaces are here to know when and what page event hap
 #### IInitializeAware
 
 It has only one interface method ```void Initialize(INavigationParameters parameters);```.
-This method is executed right after the page and it's viewmodel has been created. Executes for each page in navigation stack continuously in direct order. Accepts ```INavigationParameters``` as input arguments. Executed only once during the lifetime of the page.
+This method is executed right after the page and it's viewmodel has been created and not attached to visual tree. Executes for each page in navigation stack continuously in direct order. Accepts ```INavigationParameters``` as input arguments. Executed only once during the lifetime of the page.
 If you want your page or it's viewmodel know about this event, it must implement this interface.
+
+It's purpose for getting ```INavigationParameters``` and may be subscribe to some events.
+
+**Note: There is no ```IInitializeAsyncAware``` interface, because in mobile development it is not a good practise calling async methods when your page is not atatched to visual tree**
 
 #### IDestructible
 
 It has only one interface method ```void Desctroy();```.
 This method is executed right after the page and it's viewmodel has been detached from visual tree and needs to be GCed. Executes for each page in navigation stack continuously in reverse order. Executed only once during the lifetime of the page.
 If you want your page or it's viewmodel know about this event, it must implement this interface.
+
+It's purpose to unsubscribe from events and clear resources.
 
 ## MPowerKit.Navigation
 
