@@ -206,10 +206,11 @@ public class NavigationService : INavigationService
         var farthestDirectParent = MvvmHelpers.GetFarthestDirectParentPageOrSelf(currentPage);
 
         if (farthestDirectParent.Parent is Window
-            && Window.Navigation.ModalStack.Count > 1
+            && Window.Navigation.ModalStack.Count > 0
             && Window.Navigation.ModalStack.Any(p => p == farthestDirectParent))
         {
             await GoBackModally(parameters, animated);
+            return;
         }
 
         var previousRootPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window);
