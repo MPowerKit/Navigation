@@ -5,6 +5,7 @@
 		<UseMaui>true</UseMaui>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<MauiVersion>8.0.3</MauiVersion>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>MPowerKit.Regions</Title>

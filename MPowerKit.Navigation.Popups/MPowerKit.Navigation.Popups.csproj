@@ -7,6 +7,7 @@
 		<UseMaui>true</UseMaui>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<MauiVersion>8.0.3</MauiVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -16,7 +17,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>MPowerKit.Navigation.Popups</Title>
-		<Version>1.1.7</Version>
+		<Version>1.1.7.1</Version>
 		<Authors>MPowerKit,Alex Dobrynin</Authors>
 		<Description>.NET MAUI MVVM navigation framework. It supports regular/modal navigation, opening/closing windows, regions, popups</Description>
 		<Copyright>MPowerKit</Copyright>
