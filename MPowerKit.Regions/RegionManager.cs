@@ -121,7 +121,7 @@ public class RegionManager : IRegionManager
 
         try
         {
-            if (_regionHolders.ContainsKey(newKey) && !_regionHolders[newKey].TryGetTarget(out var target))
+            if (_regionHolders.ContainsKey(newKey) && _regionHolders[newKey].TryGetTarget(out var target))
             {
                 throw new Exception();
             }
