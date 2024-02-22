@@ -7,9 +7,7 @@ public static class NavigationParametersExtensions
 {
     public static NavigationDirection GetNavigationDirection(this INavigationParameters? parameters)
     {
-        if (parameters is null) return NavigationDirection.None;
-
-        return parameters.GetValue<NavigationDirection>(KnownNavigationParameters.NavigationDirection);
+        return parameters?.GetValue<NavigationDirection>(KnownNavigationParameters.NavigationDirection) ?? NavigationDirection.None;
     }
 }
 

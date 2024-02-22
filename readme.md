@@ -21,7 +21,7 @@ This is the core library for [MPowerKit.Navigation](#MPowerKitNavigation) and ot
 
 ### Awares
 
-Same as in Prism, aware interfaces are here to know when and what page event happens.
+Same as in Prism, aware interfaces are here to know when and what page event happens. For your page / viewmodel to be awared for particular event it should implement that aware interface.
 
 #### IInitializeAware
 
@@ -29,7 +29,7 @@ It has only one interface method ```void Initialize(INavigationParameters parame
 This method is executed right after the page and it's viewmodel has been created and not attached to visual tree. Executes for each page in navigation stack continuously in direct order. Accepts ```INavigationParameters``` as input arguments. Executed only once during the lifetime of the page.
 If you want your page or it's viewmodel know about this event, it must implement this interface.
 
-It's purpose to get ```INavigationParameters``` and may be subscribe to some events.
+It's purpose to get ```INavigationParameters``` and probably to subscribe to some events.
 
 **Note: There is no ```IInitializeAsyncAware``` interface, because in mobile development it is not a good practise calling async methods when your page is not atatched to visual tree**
 
@@ -40,6 +40,57 @@ This method is executed right after the page and it's viewmodel has been detache
 If you want your page or it's viewmodel know about this event, it must implement this interface.
 
 It's purpose to unsubscribe from events and clear resources.
+
+#### INavigationAware
+
+It has two interface methods:
+1. ```void OnNavigatedFrom(INavigationParameters parameters);```. This method is executed when the forward or backward navigation from the page happens.
+When a new page is opened this event will be called on a previous page with ```NavigationDirection``` parameter included with the ```NavigationDirection.New``` value.
+When going back this event will be called on a page is being closed with ```NavigationDirection``` parameter included with the ```NavigationDirection.Back``` value.
+2. ```void OnNavigatedTo(INavigationParameters parameters);```. This method is executed when the forward or backward navigation to the page happens.
+When a new page is opened this event will be called on a new page with ```NavigationDirection``` parameter included with the ```NavigationDirection.New``` value.
+When going back this event will be called on a previous page in the stack with ```NavigationDirection``` parameter included with the ```NavigationDirection.Back``` value.
+
+To get ```NavigationDirection``` value you can call ```GetNavigationDirection()``` extension method on ```INavigationParameters``` variable;
+
+#### IPageLifecycleAware
+
+This interface is tied to the ```Page``` class lifecycle events
+It has two interface methods:
+1. ```void OnAppearing();```. This method is executed when the page is appearing.
+2. ```void OnDisappearing();```. This method is executed when the page is disappearing.
+
+**Note: This interface should be implemented only by page viewmodels, because ```Page``` class already has these methods under the hood from MAUI**
+**Note: You can get page lyfecycle events in the regions if region views / viewmodels implement this interface**
+
+#### IWindowLifecycleAware
+
+This interface is tied to the ```Window``` class lifecycle events
+It has two interface methods:
+1. ```void OnResume();```.
+2. ```void OnSleep();```.
+
+**Note: You can get window lyfecycle events in the regions if region views / viewmodels implement this interface**
+
+#### ISystemBackButtonClickAware
+
+If you want to have the full control over the navigation process you would want to implement this interface.
+It has only one interface method ```bool OnSystemBackButtonClick();```. This method is executed when the system back button was clicked. It works on all platfroms, supported by MAUI, even on iOS and MacCatalyst, even when a page is closed by swipe.
+It returns boolean value indicating whether this event was handled or not. If not, the backward navigation will be handled by the MAUI itself. In this case no navigation or destructive events are called by MPowerKit.
+
+#### IActiveTabAware
+
+This interface has only one boolean property ```bool IsOnActiveTab { get; set; }``` indicating the tab page is active or not.
+This interface can be implemented by the page which is the root of the tab. If the root of the tab is ```NavigationPage``` the ```IsOnActiveTab``` property will be changed on this ```NavigationPage``` and on ```RootPage``` and ```CurrentPage``` of this ```NavigationPage``` if they are implementing this interface.
+
+**Note: It will take no effect if this property is changed manually from the tab page / viewmodel**
+
+#### IFlyoutPageFlyoutPresentedAware
+
+This interface has only one boolean property ```bool IsFlyoutPresented { get; set; }``` indicating the ```Flyout``` is presented or not.
+This interface can be implemented by the ```FlyoutPage``` viewmodel, ```Flyout``` page, ```Detail``` page. If the root of the ```Detail``` page is ```NavigationPage``` the ```IsFlyoutPresented``` property will be changed on this ```NavigationPage``` and on ```RootPage``` and ```CurrentPage``` of this ```NavigationPage``` if they are implementing this interface.
+
+**Note: It will take no effect if this property is changed manually from the FlyOut page / viewmodel**
 
 ## MPowerKit.Navigation
 
