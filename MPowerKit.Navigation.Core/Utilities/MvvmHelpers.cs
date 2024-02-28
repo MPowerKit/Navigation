@@ -3,7 +3,7 @@ using MPowerKit.Navigation.Interfaces;
 
 namespace MPowerKit.Navigation.Utilities;
 
-public class MvvmHelpers
+public static class MvvmHelpers
 {
     public static bool UsePageEventsInRegions { get; set; }
 

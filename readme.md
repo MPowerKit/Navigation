@@ -4,7 +4,7 @@
 
 Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
 
-##### Since Prism for .NET MAUI has some critical (for our company) bugs and different behavior comparing to Prism.Forms, we decided to write our own navigation framework. This library brings you the same principle for navigation througn the MAUI app as Prism, but has absolutely different implementation and a bit improved performance. It also brings (in our opinion) proper way to handle 'System back button' click, works nad has same behavior for all platforms.
+##### Since Prism for .NET MAUI has some critical (for our company) bugs and different behavior comparing to Prism.Forms, we decided to write our own navigation framework. This library brings you the same principle for navigation through the MAUI app as Prism, but has absolutely different implementation and a bit improved performance. It also brings (in our opinion) proper way to handle 'System back button' click, it works and has same behavior for all platforms.
 
 ## Available Nugets
 
@@ -15,6 +15,41 @@ Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
 | [MPowerKit.Navigation.Popups](#MPowerKitNavigationPopups) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Navigation.Popups)](https://www.nuget.org/packages/MPowerKit.Navigation.Popups) |
 | [MPowerKit.Navigation.Regions](#MPowerKitNavigationRegions) | [![Nuget](https://img.shields.io/nuget/v/MPowerKit.Regions)](https://www.nuget.org/packages/MPowerKit.Regions) |
 
+- [MPowerKit.Navigation.Core](#MPowerKitNavigationCore)
+    - [Awares](#Awares)
+        - [IInitializeAware](#IInitializeAware)
+        - [IDestructible](#IDestructible)
+        - [INavigationAware](#INavigationAware)
+        - [IPageLifecycleAware](#IPageLifecycleAware)
+        - [IWindowLifecycleAware](#IWindowLifecycleAware)
+        - [ISystemBackButtonClickAware](#ISystemBackButtonClickAware)
+        - [IActiveTabAware](#IActiveTabAware)
+        - [IFlyoutPageFlyoutPresentedAware](#IFlyoutPageFlyoutPresentedAware)
+    - [Other useful classes](#Other-useful-classes)
+        - [NavigationResult](#NavigationResult)
+        - [KnownNavigationParameters](#KnownNavigationParameters)
+        - [BehaviorBase](#BehaviorBase)
+        - [ServiceLocatorExtensions](#ServiceLocatorExtensions)
+        - [BehaviorExtensions](#BehaviorExtensions)
+        - [MvvmHelpers](#MvvmHelpers)
+- [MPowerKit.Navigation](#MPowerKitNavigation)
+- [MPowerKit.Navigation.Popups](#MPowerKitNavigationPopups)
+    - [Setup](#SetupPopups)
+        - [Register popup pages](#Register-popup-pages)
+    - [Usage](#UsePopups)
+        - [IPopupDialogAware](#IPopupDialogAware)
+            - [Example](#IPopupDialogAwareExample)
+        - [IPopupNavigationService](#IPopupNavigationService)
+- [MPowerKit.Navigation.Regions](#MPowerKitNavigationRegions)
+    - [Setup](#SetupRegions)
+        - [Register your region views](#Register-your-region-views)
+    - [Usage](#UseRegions)
+        - [IRegionManager](#IRegionManager)
+            - [Example](#IRegionManagerExample)
+        - [IRegion](#IRegion)
+
+---
+
 ## MPowerKit.Navigation.Core
 
 This is the core library for [MPowerKit.Navigation](#MPowerKitNavigation) and other libraries. It contains core functionality, utility classes and interfaces.
@@ -23,7 +58,9 @@ This is the core library for [MPowerKit.Navigation](#MPowerKitNavigation) and ot
 
 Same as in Prism, aware interfaces are here to know when and what page event happens. For your page / viewmodel to be awared for particular event it should implement that aware interface.
 
-#### IInitializeAware
+<details>
+<summary><a name="IInitializeAware">IInitializeAware</a></summary>
+<br>
 
 It has only one interface method ```void Initialize(INavigationParameters parameters);```.
 This method is executed right after the page and it's viewmodel has been created and not attached to visual tree. Executes for each page in navigation stack continuously in direct order. Accepts ```INavigationParameters``` as input arguments. Executed only once during the lifetime of the page.
@@ -33,7 +70,11 @@ It's purpose to get ```INavigationParameters``` and probably to subscribe to som
 
 **Note: There is no ```IInitializeAsyncAware``` interface, because in mobile development it is not a good practise calling async methods when your page is not atatched to visual tree**
 
-#### IDestructible
+</details>
+
+<details>
+<summary><a name="IDestructible">IDestructible</a></summary>
+<br>
 
 It has only one interface method ```void Desctroy();```.
 This method is executed right after the page and it's viewmodel has been detached from visual tree and needs to be GCed. Executes for each page in navigation stack continuously in reverse order. Executed only once during the lifetime of the page.
@@ -41,7 +82,11 @@ If you want your page or it's viewmodel know about this event, it must implement
 
 It's purpose to unsubscribe from events and clear resources.
 
-#### INavigationAware
+</details>
+
+<details>
+<summary><a name="INavigationAware">INavigationAware</a></summary>
+<br>
 
 It has two interface methods:
 1. ```void OnNavigatedFrom(INavigationParameters parameters);```. This method is executed when the forward or backward navigation from the page happens.
@@ -53,7 +98,11 @@ When going back this event will be called on a previous page in the stack with `
 
 To get ```NavigationDirection``` value you can call ```GetNavigationDirection()``` extension method on ```INavigationParameters``` variable;
 
-#### IPageLifecycleAware
+</details>
+
+<details>
+<summary><a name="IPageLifecycleAware">IPageLifecycleAware</a></summary>
+<br>
 
 This interface is tied to the ```Page``` class lifecycle events
 It has two interface methods:
@@ -63,7 +112,11 @@ It has two interface methods:
 **Note: This interface should be implemented only by page viewmodels, because ```Page``` class already has these methods under the hood from MAUI**
 **Note: You can get page lyfecycle events in the regions if region views / viewmodels implement this interface**
 
-#### IWindowLifecycleAware
+</details>
+
+<details>
+<summary><a name="IWindowLifecycleAware">IWindowLifecycleAware</a></summary>
+<br>
 
 This interface is tied to the ```Window``` class lifecycle events
 It has two interface methods:
@@ -72,35 +125,105 @@ It has two interface methods:
 
 **Note: You can get window lyfecycle events in the regions if region views / viewmodels implement this interface**
 
-#### ISystemBackButtonClickAware
+</details>
+
+<details>
+<summary><a name="ISystemBackButtonClickAware">ISystemBackButtonClickAware</a></summary>
+<br>
 
 If you want to have the full control over the navigation process you would want to implement this interface.
 It has only one interface method ```bool OnSystemBackButtonClick();```. This method is executed when the system back button was clicked. It works on all platfroms, supported by MAUI, even on iOS and MacCatalyst, even when a page is closed by swipe.
 It returns boolean value indicating whether this event was handled or not. If not, the backward navigation will be handled by the MAUI itself. In this case no navigation or destructive events are called by MPowerKit.
 
-#### IActiveTabAware
+</details>
+
+<details>
+<summary><a name="IActiveTabAware">IActiveTabAware</a></summary>
+<br>
 
 This interface has only one boolean property ```bool IsOnActiveTab { get; set; }``` indicating the tab page is active or not.
 This interface can be implemented by the page which is the root of the tab. If the root of the tab is ```NavigationPage``` the ```IsOnActiveTab``` property will be changed on this ```NavigationPage``` and on ```RootPage``` and ```CurrentPage``` of this ```NavigationPage``` if they are implementing this interface.
 
 **Note: It will take no effect if this property is changed manually from the tab page / viewmodel**
 
-#### IFlyoutPageFlyoutPresentedAware
+</details>
+
+<details>
+<summary><a name="IFlyoutPageFlyoutPresentedAware">IFlyoutPageFlyoutPresentedAware</a></summary>
+<br>
 
 This interface has only one boolean property ```bool IsFlyoutPresented { get; set; }``` indicating the ```Flyout``` is presented or not.
 This interface can be implemented by the ```FlyoutPage``` viewmodel, ```Flyout``` page, ```Detail``` page. If the root of the ```Detail``` page is ```NavigationPage``` the ```IsFlyoutPresented``` property will be changed on this ```NavigationPage``` and on ```RootPage``` and ```CurrentPage``` of this ```NavigationPage``` if they are implementing this interface.
 
 **Note: It will take no effect if this property is changed manually from the FlyOut page / viewmodel**
 
+</details>
+
+### Other useful classes
+
+<details>
+<summary><a name="NavigationResult">NavigationResult</a></summary>
+<br>
+
+This class is used as a return type of each navigation. It contains information about was navigation successful or not and if not it will contain an exception with error description.
+
+</details>
+
+<details>
+<summary><a name="KnownNavigationParameters">KnownNavigationParameters</a></summary>
+<br>
+
+This is a static class with constants which are used as navigation parameters.
+
+</details>
+
+<details>
+<summary><a name="BehaviorBase">BehaviorBase</a></summary>
+<br>
+
+This is a generic base class for all behaviors you may use in your MAUI app. It has the same ```BindingContext``` as the control it attached to, so you can easily bind to your viewmodel from behavior.
+
+</details>
+
+<details>
+<summary><a name="ServiceLocatorExtensions">ServiceLocatorExtensions</a></summary>
+<br>
+
+This is a static class which contains methods for registering and resolving views for navigation. You may register pages as well as regular views (used by regions) for navigation.
+
+</details>
+
+<details>
+<summary><a name="BehaviorExtensions">BehaviorExtensions</a></summary>
+<br>
+
+This is a static class which contains methods for registering behaviors and associating them with views. Then registered behaviors will be applied to the associated view, when this view created by the library.
+
+**Note: The associated views should be registered for navigation if you want the behaviors be applied to these views**
+
+</details>
+
+<details>
+<summary><a name="MvvmHelpers">MvvmHelpers</a></summary>
+<br>
+
+This is a static class which contains helper methods for navigation, resolving and finding parent views, applying awares and etc.
+
+</details>
+
+---
+
 ## MPowerKit.Navigation
 
 WIP
+
+---
 
 ## MPowerKit.Navigation.Popups
 
 This library based on [MPowerKit.Navigation](#MPowerKit.Navigation) and [MPowerKit.Popups](https://github.com/MPowerKit/Popups) libraries
 
-### Setup
+<h3><a name="SetupPopups">Setup</a></h3>
 
 Add ```UsePopupNavigation()``` to ```MPowerKitBuilder``` in your MauiProgram.cs file as next
 
@@ -122,7 +245,7 @@ builder
 When you specify ```.UsePopupNavigation()``` it registers ```MPowerKitPopupsWindow``` as main class for every window, it is responsible for system back button.
 It inherits ```MPowerKitWindow``` which is main class for window in [MPowerKit.Navigation](#MPowerKit.Navigation), it also responsible for system back button on every platform, even in mac and ios (top-left back button on the page's toolbar)
 
-#### Register your popup pages
+#### Register popup pages
 
 ```csharp
 mpowerBuilder.ConfigureServices(s =>
@@ -158,11 +281,13 @@ mpowerBuilder.ConfigureServices(s =>
 - The popup will be resolved by association name, which is preferred way
 - The view model is ```TestPopupViewModel```
 
-### Usage
+<h3><a name="UsePopups">Usage</a></h3>
 
 Each popup page must inherit from ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
 
-#### IPopupDialogAware
+<details>
+<summary><a name="IPopupDialogAware">IPopupDialogAware</a></summary>
+<br>
 
 To have full control over the popup flow it is better that your popup or popup's viewmodel implement this interface. This interface gives you an ability to close popup programmatically from popup or it's viewmodel.
 ```IPopupDialogAware``` interface provides only one property ```RequestClose```. It is an ```Action```. You should call it when you want to close the popup. It accepts a tuple with ```Confirmation``` object and a boolean whether animated or not.
@@ -172,7 +297,7 @@ The value for ```RequestClose``` property is set under the hood by the framework
 1. Boolean whether confirmed or not; 
 2. ```INavigationParameters``` to pass the parameters back from popup to popup caller (it is optional).
 
-##### Example
+<h5><a name="IPopupDialogAwareExample">Example</a></h5>
 
 ```csharp
 public class TestPopupViewModel : IPopupDialogAware
@@ -201,7 +326,11 @@ public class TestPopupViewModel : IPopupDialogAware
 }
 ```
 
-#### IPopupNavigationService
+</details>
+
+<details>
+<summary><a name="IPopupNavigationService">IPopupNavigationService</a></summary>
+<br>
 
 Main unit of work of this library is ```IPopupNavigationService```. Under the hood it is registered as scoped service (NOT SINGLETONE), which means that it knows from which page it was opened to know the parent window it is attached to.
 So, in theory you can open different popups in different windows in same time.
@@ -239,6 +368,10 @@ ValueTask<NavigationResult> HidePopupAsync(PopupPage page, bool animated = true)
 Hides the specified popup if it was opened.
 The difference with [MPowerKit.Popups](https://github.com/MPowerKit/Popups) that it invokes all necessary aware interfaces you specified for your popup or it's viewmodel.
 
+</details>
+
+---
+
 ## MPowerKit.Navigation.Regions
 
 Like [MPowerKit.Navigation](#MPowerKit.Navigation) Regions library is very similar to [Prism's](https://github.com/PrismLibrary/Prism) one. It has same sense, but different implementation.
@@ -247,7 +380,7 @@ Shortly what it is:
 In MAUI you can navigate only through pages, but what if you need to have big page with few different sections, let's call them, regions. For example: [TabView](https://github.com/MPowerKit/TabView) or some desktop screen with sections. Do we need to keep all logic in one god viewmodel? - With regions no.
 It gives you simple and flexible way to navigate to the regions (sections on UI) from your page or viewmodel, or even from another region. Each region can hold as much views as you like, but only one will be visible at the moment. And you can simply put all logic related to the section inside the region viewmodel. Regions can be recursive.
 
-### Setup
+<h3><a name="SetupRegions">Setup</a></h3>
 
 Add ```UseMPowerKitRegions()``` to your MauiProgram.cs file as next
 
@@ -323,11 +456,9 @@ builder.Services
 - The region view will be resolved by association name, which is preferred way
 - The view model is ```Region1ViewModel```
 
-### Usage
+<h3><a name="UseRegions">Usage</a></h3>
 
 Each region should have the parent container which will be the so-called region holder. This region holder has to be ```typeof(ContentView)```.
-
-##### In your xaml:
 
 Firstly add namespace
 
@@ -355,7 +486,9 @@ To remove region holder from region registrations there is hidden method ```Regi
 
 **Note: you should not use it, if you use [MPowerKit.Regions](#MPowerKit.Regions) in couple with [MPowerKit.Navigation](#MPowerKit.Navigation)**
 
-#### IRegionManager
+<details>
+<summary><a name="IRegionManager">IRegionManager</a></summary>
+<br>
 
 Inject ```IRegionManager``` to your view's or viewmodel's contructor.
 
@@ -373,7 +506,7 @@ IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
 ```
 Retrieves all child regions associated with a chosen region holder. It can be particularly useful when you need to clean up resources and invoke lifecycle events for these regions.
 
-##### Example
+<h5><a name="IRegionManagerExample">Example</a></h5>
 
 ```csharp
 IRegionManager _regionManager;
@@ -381,7 +514,11 @@ IRegionManager _regionManager;
 _regionManger.NavigateTo("YourRegionName", "RegionViewAssociationName", optionalNavigationParametersObject);
 ```
 
-#### IRegion
+</details>
+
+<details>
+<summary><a name="IRegion">IRegion</a></summary>
+<br>
 
 To use ```IRegion``` object just inject it to your region view ot it's viewmodel and then you will have the control over your region stack.
 
@@ -435,3 +572,5 @@ Same as ```CanGoBack``` but to the opposite direction.
 Also, this interface describes another few utility methods which invoke aware interfaces.
 
 Region views or their viewmodels can implement next aware interfaces: ```IInitializeAware```, ```INavigationAware```, ```IDestructible```, ```IWindowLifecycleAware```, ```IPageLifecycleAware```
+
+</details>
