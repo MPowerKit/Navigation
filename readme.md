@@ -223,7 +223,7 @@ WIP
 
 This library based on [MPowerKit.Navigation](#MPowerKit.Navigation) and [MPowerKit.Popups](https://github.com/MPowerKit/Popups) libraries
 
-<h3><a name="SetupPopups">Setup</a></h3>
+### Setup
 
 Add ```UsePopupNavigation()``` to ```MPowerKitBuilder``` in your MauiProgram.cs file as next
 
@@ -281,7 +281,7 @@ mpowerBuilder.ConfigureServices(s =>
 - The popup will be resolved by association name, which is preferred way
 - The view model is ```TestPopupViewModel```
 
-<h3><a name="UsePopups">Usage</a></h3>
+### Usage
 
 Each popup page must inherit from ```PopupPage``` of [MPowerKit.Popups](https://github.com/MPowerKit/Popups) library
 
@@ -297,7 +297,7 @@ The value for ```RequestClose``` property is set under the hood by the framework
 1. Boolean whether confirmed or not; 
 2. ```INavigationParameters``` to pass the parameters back from popup to popup caller (it is optional).
 
-<h5><a name="IPopupDialogAwareExample">Example</a></h5>
+##### Example
 
 ```csharp
 public class TestPopupViewModel : IPopupDialogAware
@@ -380,7 +380,7 @@ Shortly what it is:
 In MAUI you can navigate only through pages, but what if you need to have big page with few different sections, let's call them, regions. For example: [TabView](https://github.com/MPowerKit/TabView) or some desktop screen with sections. Do we need to keep all logic in one god viewmodel? - With regions no.
 It gives you simple and flexible way to navigate to the regions (sections on UI) from your page or viewmodel, or even from another region. Each region can hold as much views as you like, but only one will be visible at the moment. And you can simply put all logic related to the section inside the region viewmodel. Regions can be recursive.
 
-<h3><a name="SetupRegions">Setup</a></h3>
+### Setup
 
 Add ```UseMPowerKitRegions()``` to your MauiProgram.cs file as next
 
@@ -456,7 +456,7 @@ builder.Services
 - The region view will be resolved by association name, which is preferred way
 - The view model is ```Region1ViewModel```
 
-<h3><a name="UseRegions">Usage</a></h3>
+### Usage
 
 Each region should have the parent container which will be the so-called region holder. This region holder has to be ```typeof(ContentView)```.
 
@@ -506,7 +506,7 @@ IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
 ```
 Retrieves all child regions associated with a chosen region holder. It can be particularly useful when you need to clean up resources and invoke lifecycle events for these regions.
 
-<h5><a name="IRegionManagerExample">Example</a></h5>
+##### Example
 
 ```csharp
 IRegionManager _regionManager;
