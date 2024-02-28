@@ -224,6 +224,8 @@ This is a static class which contains helper methods for navigation, resolving a
 
 ## MPowerKit.Navigation
 
+WIP
+
 This library provides all neccessary infrastructure to build rich applications full of navigation between different pages in completely MVVM manner.
 
 ### Setup
