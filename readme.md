@@ -4,7 +4,7 @@
 
 Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
 
-##### Since Prism for .NET MAUI has some critical (for our company) bugs and different behavior comparing to Prism.Forms, we decided to write our own navigation framework. This library brings you the same principle for navigation through the MAUI app as Prism, but has absolutely different implementation and a bit improved performance. It also brings (in our opinion) proper way to handle 'System back button' click, it works and has same behavior for all platforms.
+##### Since MAUI's Shell navigation is a bit castrated and not suitable with building production-ready large applications and, unfortunately, Prism Library for .NET MAUI has some critical (for our company) bugs and different behavior comparing to Prism.Forms, we decided to write our own navigation framework. This library brings you the same principle for navigation through the MAUI app as Prism, but has absolutely different implementation and a bit improved performance. It also brings (in our opinion) proper way to handle 'System back button' click, it works and has same behavior for all platforms.
 
 ## Available Nugets
 
@@ -33,15 +33,24 @@ Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
         - [BehaviorExtensions](#BehaviorExtensions)
         - [MvvmHelpers](#MvvmHelpers)
 - [MPowerKit.Navigation](#MPowerKitNavigation)
-- [MPowerKit.Navigation.Popups](#MPowerKitNavigationPopups)
     - [Setup](#Setup)
+        - [Register pages, services and behaviors](#Register-pages-services-and-behaviors)
+            - [Register services](#RegisterServices)
+            - [Already register services](#AlreadyRegisterServices)
+            - [Register pages](#RegisterPages)
+            - [Already register pages](#AlreadyRegisterPages)
+            - [Register behaviors](#RegisterBehaviors)
+            - [Already register behaviors](#AlreadyRegisterBehaviors)
+        - [Configure app start](#Configure-app-start)
+- [MPowerKit.Navigation.Popups](#MPowerKitNavigationPopups)
+    - [Setup](#Setup-1)
         - [Register popup pages](#Register-popup-pages)
     - [Usage](#Usage)
         - [IPopupDialogAware](#IPopupDialogAware)
             - [Example](#Example)
         - [IPopupNavigationService](#IPopupNavigationService)
 - [MPowerKit.Navigation.Regions](#MPowerKitNavigationRegions)
-    - [Setup](#Setup-1)
+    - [Setup](#Setup-2)
         - [Register your region views](#Register-your-region-views)
     - [Usage](#Usage-1)
         - [IRegionManager](#IRegionManager)
@@ -131,9 +140,9 @@ It has two interface methods:
 <summary><a name="ISystemBackButtonClickAware">ISystemBackButtonClickAware</a></summary>
 <br>
 
-If you want to have the full control over the navigation process you would want to implement this interface.
+If you want to have the full control over the navigation process you would want your page or it's viewmodel implement this interface.
 It has only one interface method ```bool OnSystemBackButtonClick();```. This method is executed when the system back button was clicked. It works on all platfroms, supported by MAUI, even on iOS and MacCatalyst, even when a page is closed by swipe.
-It returns boolean value indicating whether this event was handled or not. If not, the backward navigation will be handled by the MAUI itself. In this case no navigation or destructive events are called by MPowerKit.
+It returns boolean value indicating whether this event was handled or not. If handled, then the backward navigation should be handled by developer, eg call ```INavigationService.GoBackAsync()```. If not, the backward navigation will be handled by the MAUI itself. In this case no navigation or destructive events are called by MPowerKit.
 
 </details>
 
@@ -215,7 +224,212 @@ This is a static class which contains helper methods for navigation, resolving a
 
 ## MPowerKit.Navigation
 
-WIP
+This library provides all neccessary infrastructure to build rich applications full of navigation between different pages in completely MVVM manner.
+
+### Setup
+
+Add ```UseMPowerKitNavigation(b => { })``` to ```MauiAppBuilder``` in your MauiProgram.cs file as next
+
+```csharp
+builder
+    .UseMauiApp<App>()
+    .UseMPowerKitNavigation(mpowerBuilder =>
+    {
+        mpowerBuilder.ConfigureServices(s =>
+        {
+            s.RegisterForNavigation<MainPage>();
+        })
+        .OnAppStart("NavigationPage/MainPage");
+    });
+```
+
+This is enough to start the app with the root page of ```MainPage```. 
+
+If you need to register services or configure app start you may need set up additional settings.
+
+#### Register pages, services and behaviors
+
+For this action there is ```ConfigureServices(s => { })``` extension method.
+
+<details>
+<summary><a name="RegisterServices">Register services</a></summary>
+<br>
+
+Since under the hood ```ConfigureServices()``` method uses ```IServiceCollection``` object of ```MauiAppBuilder``` you can also register your services outside ```ConfigureServices``` method.
+But it is way better to keep all of your registrations in one place. 
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    // Register services
+    s.AddSingleton<ISingletonService, SingletonService>();
+    s.AddScoped<IScopedService, ScopedService>();
+    s.AddTransient<ITransientService, TransientService>();
+});
+```
+
+</details>
+
+<details>
+<summary><a name="AlreadyRegisterServices">Already register services</a></summary>
+<br>
+
+There is already registered a bunch of neccessary services used by this library. The entire list you can find [here](/MPowerKit.Navigation/MPowerKitMvvmBuilder.cs#L38).
+
+But there is some services you may need to extend or completely change registration.
+
+1. ```MPowerKitWindow``` is registered as transient service as ```IMPowerKitWindow``` and gives an ability to handle system back button click and window lifecycle.
+If you need to change ```MPowerKitWindow``` implementation or change the system back button click behavior you can extend this class and register new implementation as next:
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.AddTransient<IMPowerKitWindow, NewWindowThatExtendsMPowerKitWindow>();
+});
+```
+
+2. ```NavigationService``` is registered as scoped service as ```INavigationService```. It is used for navigation through the app. The detailed descriptions is [here]().
+If you need to override some basic implementations of it, you can register your implementation as next:
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.AddScoped<INavigationService, YourNavigationService>();
+});
+```
+
+</details>
+
+<details>
+<summary><a name="RegisterPages">Register pages</a></summary>
+<br>
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.RegisterForNavigation<MainPage>();
+})
+```
+
+- The page will be resolved by it's ```nameof()```
+- No view model is specified, which means it has ```BindingContext``` set to ```new object();```
+
+or
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.RegisterForNavigation<MainPage, MainPageViewModel>();
+})
+```
+
+- The page will be resolved by it's ```nameof()```
+- The view model is ```MainPageViewModel```
+
+or
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    s.RegisterForNavigation<MainPage, MainPageViewModel>("TheAssociationNameForYourPage");
+})
+```
+
+- The page will be resolved by association name, which is preferred way
+- The view model is ```MainPageViewModel```
+
+</details>
+
+<details>
+<summary><a name="AlreadyRegisterPages">Already register pages</a></summary>
+<br>
+
+1. ```NavigationPage```. Note: For iOS and MacCatalyst custom navigation page renderer is registered to handle iOS/mac title bar back button click and swipe-to-close events.
+2. ```TabNavigationPage```. You may use it as root page of ```TabbedPage``` tab. It has logic to pass the icon and title from it's root page to ```TabbedPage```.
+3. ```TabbedPage```
+4. ```FlyoutPage```
+
+</details>
+
+<details>
+<summary><a name="RegisterBehaviors">Register behaviors</a></summary>
+<br>
+
+If you need that your pages be resolved with already attached behaviors you can easily achieve this by next:
+
+```csharp
+mpowerBuilder.ConfigureServices(s =>
+{
+    // Register behaviors
+    s.RegisterBehavior<Page, SomeUsefulBehaviorYouWantToAttachToEachPageInYourApp>();
+    s.RegisterBehavior<SecondPage, SomeUsefulBehaviorYouWantToAttachOnlyToSecondPage>();
+})
+```
+
+The behaviors should be ```typeof(Behavior)```
+
+</details>
+
+<details>
+<summary><a name="AlreadyRegisterBehaviors">Already register behaviors</a></summary>
+<br>
+
+1. ```PageLifecycleAwareBehavior```. Responsible for handling ```OnAppearing()``` and ```OnDisappearing()``` events of the page. Registered for all pages in the app.
+2. ```TabbedPageActiveTabAwareBehavior```. Responsible for handling ```CurrentPageChanged``` (active tab) event of ```TabbedPage```.
+3. ```FlyoutPageFlyoutPresentedAwareBehavior```. Responsible for handling ```IsPresentedChanged``` event of ```FlyoutPage```.
+
+</details>
+
+#### Configure app start
+
+For most cases using the setup below is enough to start the app on desired page.
+
+```csharp
+mpowerBuilder.OnAppStart("NavigationPage/YourPage");
+```
+
+But id you need, for example, do some initial setup of the app you may use next methods:
+
+1. ```OnInitialized()``` executes when the MAUI app is initialized. This is not async method
+
+It can be used as next:
+
+```csharp
+mpowerBuilder.OnInitialized(() =>
+{
+    //your initializations
+});
+```
+
+or it can accept ```IServiceProvider``` object
+
+```csharp
+mpowerBuilder.OnInitialized(serviceProvider =>
+{
+    //your initializations
+});
+```
+
+2. ```OnAppStart()``` executes when the app is ready to navigate to the first page. This is required method, without it the app will crash on the start. This is async method
+
+It can be used as next:
+
+```csharp
+mpowerBuilder.OnAppStart("NavigationPage/YourPage");
+```
+
+or if you need execute some async methods before navigation, for example:
+
+```csharp
+mpowerBuilder.OnAppStart(async (serviceProvider, navigationService) =>
+{
+    if (await IsUserLoggedIn())
+    {
+        await navigationService.NavigateAsync("NaviationPage/MainPage");
+    }
+    else await navigationService.NavigateAsync("LoginPage");
+});
+```
 
 ---
 
