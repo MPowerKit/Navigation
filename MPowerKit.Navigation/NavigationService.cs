@@ -149,6 +149,8 @@ public class NavigationService : INavigationService
             var pageNavigateTo = np.RootPage;
             var pageNavigateFrom = np.CurrentPage;
 
+            parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Back;
+
             MvvmHelpers.PageNavigatedRecursively(pageNavigateFrom, parameters, false);
             MvvmHelpers.PageNavigatedRecursively(pageNavigateTo, parameters, true);
 
@@ -228,6 +230,8 @@ public class NavigationService : INavigationService
         var pageNavigateTo = farthestDirectParent.Navigation.NavigationStack[index - 1];
         var pageNavigateFrom = farthestDirectParent;
 
+        parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Back;
+
         MvvmHelpers.PageNavigatedRecursively(pageNavigateFrom, parameters, false);
         MvvmHelpers.PageNavigatedRecursively(pageNavigateTo, parameters, true);
 
@@ -247,7 +251,7 @@ public class NavigationService : INavigationService
         var previousPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window)
             ?? throw new InvalidOperationException("Cannot navigate back modally");
 
-        parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.Back);
+        parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Back;
 
         MvvmHelpers.PageNavigatedRecursively(GetCurrentPage()!, parameters, false);
         MvvmHelpers.PageNavigatedRecursively(previousPage, parameters, true);
@@ -368,7 +372,7 @@ public class NavigationService : INavigationService
             _ => null
         })!;
 
-        parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+        parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
 
         MvvmHelpers.PageNavigatedRecursively(pageNavigateFrom, parameters, false);
         MvvmHelpers.PageNavigatedRecursively(pageNavigateTo, parameters, true);
@@ -433,7 +437,7 @@ public class NavigationService : INavigationService
         var pageNavigateFrom = navStack[^1];
         var pageNavigateTo = forward is false ? navStack[lastIndex - countOfPagesToBeRemoved] : pages[^1];
 
-        parameters.Add(KnownNavigationParameters.NavigationDirection, forward is false ? NavigationDirection.Back : NavigationDirection.New);
+        parameters[KnownNavigationParameters.NavigationDirection] = forward is false ? NavigationDirection.Back : NavigationDirection.New;
 
         MvvmHelpers.PageNavigatedRecursively(pageNavigateFrom, parameters, false);
         MvvmHelpers.PageNavigatedRecursively(pageNavigateTo, parameters, true);
@@ -473,7 +477,7 @@ public class NavigationService : INavigationService
             throw new InvalidOperationException("Window does not exist");
         }
 
-        parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+        parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
 
         var currentPage = GetCurrentPage()!;
 
@@ -487,7 +491,7 @@ public class NavigationService : INavigationService
 
     protected virtual void DoAbsolutePush(Page rootPage, INavigationParameters parameters)
     {
-        parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+        parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
 
         if (Window is null)
         {

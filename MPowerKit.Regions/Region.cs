@@ -50,7 +50,7 @@ public class Region : IRegion
 
             var viewsToRemove = RegionStack.Reverse().ToList();
 
-            parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+            parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
 
             if (CurrentView is not null)
             {
@@ -85,7 +85,7 @@ public class Region : IRegion
 
             var index = RegionStack.Count - 1;
 
-            parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+            parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
 
             if (CurrentView is not null)
             {
@@ -123,7 +123,7 @@ public class Region : IRegion
 
             var index = 0;
 
-            parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
+            parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
 
             if (CurrentView is not null)
             {
@@ -188,7 +188,7 @@ public class Region : IRegion
             var viewNavigateTo = RegionStack[index - 1];
             var viewNavigateFrom = CurrentView!;
 
-            parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.Back);
+            parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Back;
 
             NavigatedRecursively(parameters, false);
             CurrentView = viewNavigateTo;
@@ -217,7 +217,7 @@ public class Region : IRegion
 
             var viewNavigateTo = RegionStack[index + 1];
 
-            parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.Forward);
+            parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Forward;
 
             NavigatedRecursively(parameters, false);
             CurrentView = viewNavigateTo;
