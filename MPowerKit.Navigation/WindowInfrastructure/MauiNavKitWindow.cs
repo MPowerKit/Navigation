@@ -16,12 +16,11 @@ public class MPowerKitWindow : Window, IMPowerKitWindow, IWindow
     {
         if (Page is null) return false;
 
-        if (Navigation.ModalStack.Count > 0)
-        {
-            return MvvmHelpers.HandleSystemBackButtonClickRecursively(Navigation.ModalStack[^1]);
-        }
+        var page = Navigation.ModalStack.Count > 0
+            ? Navigation.ModalStack[^1]
+            : Page;
 
-        return MvvmHelpers.HandleSystemBackButtonClickRecursively(Page);
+        return MvvmHelpers.HandleSystemBackButtonClickRecursively(page);
     }
 
     protected override void OnResumed()

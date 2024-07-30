@@ -407,4 +407,9 @@ public static class MvvmHelpers
         InvokeViewAndViewModelAction<ISystemBackButtonClickAware>(page, v => handled |= handled || v.OnSystemBackButtonClick());
         return handled;
     }
+
+    public static bool IsTypeOf<T>(VisualElement view)
+    {
+        return view is T || view.BindingContext is T;
+    }
 }

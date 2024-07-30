@@ -175,6 +175,17 @@ public class NavigationService : INavigationService
 
         try
         {
+            if (Window is null)
+            {
+                throw new InvalidOperationException("Window does not exist");
+            }
+
+            var currentPage = GetCurrentPage()!;
+            if (!IsActiveViewAttached.GetIsActiveView(currentPage))
+            {
+                throw new InvalidOperationException("Cannot navigate back from inactvie page");
+            }
+
             if (modal)
             {
                 await GoBackModally(parameters, animated);
@@ -194,21 +205,12 @@ public class NavigationService : INavigationService
 
     protected virtual async ValueTask GoBack(INavigationParameters parameters, bool animated)
     {
-        if (Window is null)
-        {
-            throw new InvalidOperationException("Window does not exist");
-        }
-
         var currentPage = GetCurrentPage()!;
-        if (!IsActiveViewAttached.GetIsActiveView(currentPage))
-        {
-            throw new InvalidOperationException("Cannot navigate back from inactvie page");
-        }
 
         var farthestDirectParent = MvvmHelpers.GetFarthestDirectParentPageOrSelf(currentPage);
 
         if (farthestDirectParent.Parent is Window
-            && Window.Navigation.ModalStack.Count > 0
+            && Window!.Navigation.ModalStack.Count > 0
             && Window.Navigation.ModalStack.Any(p => p == farthestDirectParent))
         {
             await GoBackModally(parameters, animated);
@@ -248,7 +250,7 @@ public class NavigationService : INavigationService
             throw new InvalidOperationException("Cannot navigate back modally, modal stack is empty");
         }
 
-        var previousPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window)
+        var previousPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window!)
             ?? throw new InvalidOperationException("Cannot navigate back modally");
 
         parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Back;
