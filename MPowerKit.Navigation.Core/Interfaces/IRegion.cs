@@ -7,8 +7,10 @@ public interface IRegion
     NavigationResult PushBackwards(string viewName, INavigationParameters? parameters);
     NavigationResult GoBack(INavigationParameters? parameters);
     NavigationResult GoForward(INavigationParameters? parameters);
+    NavigationResult GoByName(string viewName, INavigationParameters? parameters);
     bool CanGoBack();
     bool CanGoForward();
+    bool CanGoByName(string viewName);
 
     void NavigatedRecursively(INavigationParameters parameters, bool to);
     void DestroyAll();

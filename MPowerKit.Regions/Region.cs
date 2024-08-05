@@ -155,6 +155,8 @@ public class Region : IRegion
     {
         var view = (ServiceProvider.GetViewAndViewModel(viewName) as View)!;
 
+        ViewRegionViewNameAttached.SetRegionViewName(view, viewName);
+
         MvvmHelpers.OnInitialized(view, parameters);
 
         BehaviorExtensions.ApplyBehaviors(ServiceProvider, view);
@@ -170,6 +172,11 @@ public class Region : IRegion
     public virtual bool CanGoForward()
     {
         return CurrentView is not null && RegionStack.Count > 1 && RegionStack.IndexOf(CurrentView) <= RegionStack.Count - 2;
+    }
+
+    public virtual bool CanGoByName(string viewName)
+    {
+        return (RegionStack as List<VisualElement>).Exists(v => ViewRegionViewNameAttached.GetRegionViewName(v) == viewName);
     }
 
     public virtual NavigationResult GoBack(INavigationParameters? parameters)
@@ -218,6 +225,42 @@ public class Region : IRegion
             var viewNavigateTo = RegionStack[index + 1];
 
             parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.Forward;
+
+            NavigatedRecursively(parameters, false);
+            CurrentView = viewNavigateTo;
+            NavigatedRecursively(parameters, true);
+
+            return new NavigationResult(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new NavigationResult(false, ex);
+        }
+    }
+
+    public virtual NavigationResult GoByName(string viewName, INavigationParameters? parameters)
+    {
+        parameters ??= new NavigationParameters();
+
+        try
+        {
+            if (!CanGoByName(viewName))
+            {
+                throw new InvalidOperationException("Cannot go by view name");
+            }
+
+            var viewNavigateTo = (RegionStack as List<VisualElement>).Find(v => ViewRegionViewNameAttached.GetRegionViewName(v) == viewName);
+
+            if (viewNavigateTo == CurrentView)
+            {
+                throw new InvalidOperationException("Cannot go to the already active view");
+            }
+
+            var index = RegionStack.IndexOf(CurrentView!);
+
+            var indexNavigateTo = RegionStack.IndexOf(viewNavigateTo);
+
+            parameters[KnownNavigationParameters.NavigationDirection] = index > indexNavigateTo ? NavigationDirection.Back : NavigationDirection.Forward;
 
             NavigatedRecursively(parameters, false);
             CurrentView = viewNavigateTo;
