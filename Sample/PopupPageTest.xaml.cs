@@ -1,3 +1,4 @@
+using MPowerKit.Navigation.Awares;
 using MPowerKit.Navigation.Popups;
 
 namespace Sample;

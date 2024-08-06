@@ -55,7 +55,10 @@ public static class BehaviorExtensions
         else if (page is FlyoutPage flyout)
         {
             ApplyPageBehaviors(container, flyout.Flyout);
-            ApplyPageBehaviors(container, flyout.Detail);
+            if (flyout.Detail is not null)
+            {
+                ApplyPageBehaviors(container, flyout.Detail);
+            }
         }
         else if (page is NavigationPage navPage && navPage.RootPage is not null)
         {

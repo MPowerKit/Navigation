@@ -20,10 +20,11 @@ public static class MauiProgram
                     s.RegisterForNavigation<NewPage1>();
                     s.RegisterForNavigation<NewContent1>();
                     s.RegisterForNavigation<PopupPageTest>();
+                    s.RegisterForNavigation<FlyPage>();
                 })
                 .UsePopupNavigation()
                 .UsePageEventsInRegions()
-                .OnAppStart("NavigationPage/MainPage");
+                .OnAppStart("/FlyPage/NavigationPage/MainPage");
             })
             .UseMPowerKitRegions()
             .ConfigureFonts(fonts =>
