@@ -564,7 +564,7 @@ public class NavigationService : INavigationService
         Page? page = null;
         if (segment != UriParsingHelper._onePageBack)
         {
-            page = ConfigurePage(segment, parameters);
+            page = await ConfigurePage(segment, parameters);
         }
 
         var pages = await ConstructPagesFromSegmentsRecursively(segments, initialCount, queryParameters, parameters);
@@ -675,7 +675,7 @@ public class NavigationService : INavigationService
         tabbedPage.CurrentPage = pageSelectTo;
     }
 
-    protected virtual Page ConfigurePage(string pageName, INavigationParameters parameters)
+    protected virtual async ValueTask<Page> ConfigurePage(string pageName, INavigationParameters parameters)
     {
         var newScope = ServiceProvider.CreateScope();
 
@@ -692,6 +692,8 @@ public class NavigationService : INavigationService
         BehaviorExtensions.ApplyPageBehaviors(ServiceProvider, page);
 
         MvvmHelpers.OnInitialized(page, parameters);
+
+        await MvvmHelpers.OnInitializedAsync(page, parameters);
 
         return page;
     }

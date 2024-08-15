@@ -58,7 +58,7 @@ public class PopupNavigationService : IPopupNavigationService
 
             parameters.Add(KnownNavigationParameters.NavigationDirection, NavigationDirection.New);
 
-            var page = ConfigurePage(popupName, parameters);
+            var page = await ConfigurePage(popupName, parameters);
 
             async void Page_BackgroundClicked(object? sender, RoutedEventArgs e)
             {
@@ -163,9 +163,9 @@ public class PopupNavigationService : IPopupNavigationService
         }
     }
 
-    protected virtual PopupPage ConfigurePage(string pageName, INavigationParameters parameters)
+    protected virtual async ValueTask<PopupPage> ConfigurePage(string pageName, INavigationParameters parameters)
     {
-        var scope = ViewServiceProviderAttached.GetServiceScope(PageAccessor.Page);
+        var scope = ViewServiceProviderAttached.GetServiceScope(PageAccessor.Page!);
 
         var page = (scope.ServiceProvider.GetViewAndViewModel(pageName) as PopupPage)!;
 
@@ -174,6 +174,8 @@ public class PopupNavigationService : IPopupNavigationService
         BehaviorExtensions.ApplyPageBehaviors(scope.ServiceProvider, page);
 
         MvvmHelpers.OnInitialized(page, parameters);
+
+        await MvvmHelpers.OnInitializedAsync(page, parameters);
 
         return page;
     }

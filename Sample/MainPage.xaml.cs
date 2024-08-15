@@ -1,6 +1,5 @@
 ﻿using MPowerKit.Navigation.Awares;
 using MPowerKit.Navigation.Interfaces;
-using MPowerKit.Navigation.Popups;
 
 namespace Sample;
 
@@ -34,9 +33,9 @@ public partial class MainPage : IInitializeAware
         else
             CounterBtn.Text = $"Clicked {count} times";
 
-        await _popupNavigationService.ShowPopupAsync("PopupPageTest", null, true);
+        //await _popupNavigationService.ShowPopupAsync("PopupPageTest", null, true);
 
 
-        //await _navigationService.NavigateAsync("NewPage1", null, true);
+        await _navigationService.NavigateAsync("NewPage1", null, true);
     }
 }

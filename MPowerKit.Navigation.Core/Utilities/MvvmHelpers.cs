@@ -167,6 +167,11 @@ public static class MvvmHelpers
         InvokeViewAndViewModelAction<IInitializeAware>(page, v => v.Initialize(parameters));
     }
 
+    public static Task OnInitializedAsync(VisualElement page, INavigationParameters parameters)
+    {
+        return InvokeViewAndViewModelAction<IInitializeAsyncAware>(page, async v => await v.InitializeAsync(parameters));
+    }
+
     public static void InvokeViewAndViewModelAction<T>(VisualElement view, Action<T> action) where T : class
     {
         if (view is T viewAsT)
@@ -177,6 +182,19 @@ public static class MvvmHelpers
         if (view.BindingContext is T viewModelAsT)
         {
             action(viewModelAsT);
+        }
+    }
+
+    public static async Task InvokeViewAndViewModelAction<T>(VisualElement view, Func<T, Task> action) where T : class
+    {
+        if (view is T viewAsT)
+        {
+            await action(viewAsT);
+        }
+
+        if (view.BindingContext is T viewModelAsT)
+        {
+            await action(viewModelAsT);
         }
     }
 
