@@ -2,6 +2,8 @@
 
 #### Supports regular/modal navigation, opening/closing windows, multiple windows, regions, popups
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/dimonovdd)
+
 Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
 
 ##### Since MAUI's Shell navigation is a bit castrated and not suitable with building production-ready large applications and, unfortunately, Prism Library for .NET MAUI has some critical (for our company) bugs and different behavior comparing to Prism.Forms and since Prism became paid, we decided to write our own navigation framework. This library brings you the same principle for navigation through the MAUI app as Prism, but has absolutely different implementation and a bit improved performance. It also brings (in our opinion) proper way to handle 'System back button' click, it works and has same behavior for all platforms.
