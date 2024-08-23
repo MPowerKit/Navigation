@@ -2,7 +2,7 @@
 
 #### Supports regular/modal navigation, opening/closing windows, multiple windows, regions, popups
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/dimonovdd)
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/alexdobrynin)
 
 Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
 
