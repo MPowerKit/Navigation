@@ -16,7 +16,7 @@ public class MPowerKitPopupsWindow : MPowerKitWindow
 
     protected override bool OnBackButtonClicked()
     {
-        var navigationPopupService = this.Handler.MauiContext.Services.GetRequiredService<INavigationPopupService>();
+        var navigationPopupService = this.Handler.MauiContext!.Services.GetRequiredService<INavigationPopupService>();
 
         var popup = navigationPopupService.PopupStack.FirstOrDefault(p => p.Window == this);
 

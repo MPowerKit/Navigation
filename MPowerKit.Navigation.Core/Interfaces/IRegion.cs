@@ -2,9 +2,9 @@
 
 public interface IRegion
 {
-    NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters);
-    NavigationResult Push(string viewName, INavigationParameters? parameters);
-    NavigationResult PushBackwards(string viewName, INavigationParameters? parameters);
+    ValueTask<NavigationResult> ReplaceAll(string viewName, INavigationParameters? parameters);
+    ValueTask<NavigationResult> Push(string viewName, INavigationParameters? parameters);
+    ValueTask<NavigationResult> PushBackwards(string viewName, INavigationParameters? parameters);
     NavigationResult GoBack(INavigationParameters? parameters);
     NavigationResult GoForward(INavigationParameters? parameters);
     NavigationResult GoByName(string viewName, INavigationParameters? parameters);

@@ -37,16 +37,19 @@ public class Region : IRegion
         RegionManager = regionManager;
         RegionAccessor = regionAccessor;
 
-        RegionHolder.Content = StackContainer;
+        RegionHolder!.Content = StackContainer;
     }
 
-    public virtual NavigationResult ReplaceAll(string viewName, INavigationParameters? parameters)
+    public virtual async ValueTask<NavigationResult> ReplaceAll(string viewName, INavigationParameters? parameters)
     {
+        // need to be here to wait until ui finish its important work
+        await Task.Delay(1);
+
         parameters ??= new NavigationParameters();
 
         try
         {
-            var view = InitView(viewName, parameters);
+            var view = await InitView(viewName, parameters);
 
             var viewsToRemove = RegionStack.Reverse().ToList();
 
@@ -67,6 +70,8 @@ public class Region : IRegion
                 DestroyRecursively(item);
             }
 
+            await OnLoadded(parameters);
+
             return new NavigationResult(true, null);
         }
         catch (Exception ex)
@@ -75,13 +80,16 @@ public class Region : IRegion
         }
     }
 
-    public virtual NavigationResult Push(string viewName, INavigationParameters? parameters)
+    public virtual async ValueTask<NavigationResult> Push(string viewName, INavigationParameters? parameters)
     {
+        // need to be here to wait until ui finish its important work
+        await Task.Delay(1);
+
         parameters ??= new NavigationParameters();
 
         try
         {
-            var view = InitView(viewName, parameters);
+            var view = await InitView(viewName, parameters);
 
             var index = RegionStack.Count - 1;
 
@@ -105,6 +113,8 @@ public class Region : IRegion
                 DestroyRecursively(item);
             }
 
+            await OnLoadded(parameters);
+
             return new NavigationResult(true, null);
         }
         catch (Exception ex)
@@ -113,13 +123,16 @@ public class Region : IRegion
         }
     }
 
-    public virtual NavigationResult PushBackwards(string viewName, INavigationParameters? parameters)
+    public virtual async ValueTask<NavigationResult> PushBackwards(string viewName, INavigationParameters? parameters)
     {
+        // need to be here to wait until ui finish its important work
+        await Task.Delay(1);
+
         parameters ??= new NavigationParameters();
 
         try
         {
-            var view = InitView(viewName, parameters);
+            var view = await InitView(viewName, parameters);
 
             var index = 0;
 
@@ -143,6 +156,8 @@ public class Region : IRegion
                 DestroyRecursively(item);
             }
 
+            await OnLoadded(parameters);
+
             return new NavigationResult(true, null);
         }
         catch (Exception ex)
@@ -151,13 +166,20 @@ public class Region : IRegion
         }
     }
 
-    protected virtual View InitView(string viewName, INavigationParameters parameters)
+    protected virtual async ValueTask OnLoadded(INavigationParameters parameters)
+    {
+        MvvmHelpers.OnLoaded(CurrentView!, parameters);
+        await MvvmHelpers.OnLoadedAsync(CurrentView!, parameters);
+    }
+
+    protected virtual async ValueTask<View> InitView(string viewName, INavigationParameters parameters)
     {
         var view = (ServiceProvider.GetViewAndViewModel(viewName) as View)!;
 
         ViewRegionViewNameAttached.SetRegionViewName(view, viewName);
 
         MvvmHelpers.OnInitialized(view, parameters);
+        await MvvmHelpers.OnInitializedAsync(view, parameters);
 
         BehaviorExtensions.ApplyBehaviors(ServiceProvider, view);
 
@@ -176,7 +198,7 @@ public class Region : IRegion
 
     public virtual bool CanGoByName(string viewName)
     {
-        return (RegionStack as List<VisualElement>).Exists(v => ViewRegionViewNameAttached.GetRegionViewName(v) == viewName);
+        return RegionStack.Any(v => ViewRegionViewNameAttached.GetRegionViewName(v) == viewName);
     }
 
     public virtual NavigationResult GoBack(INavigationParameters? parameters)
@@ -249,7 +271,7 @@ public class Region : IRegion
                 throw new InvalidOperationException("Cannot go by view name");
             }
 
-            var viewNavigateTo = (RegionStack as List<VisualElement>).Find(v => ViewRegionViewNameAttached.GetRegionViewName(v) == viewName);
+            var viewNavigateTo = RegionStack.FirstOrDefault(v => ViewRegionViewNameAttached.GetRegionViewName(v) == viewName);
 
             if (viewNavigateTo == CurrentView)
             {
@@ -258,7 +280,7 @@ public class Region : IRegion
 
             var index = RegionStack.IndexOf(CurrentView!);
 
-            var indexNavigateTo = RegionStack.IndexOf(viewNavigateTo);
+            var indexNavigateTo = RegionStack.IndexOf(viewNavigateTo!);
 
             parameters[KnownNavigationParameters.NavigationDirection] = index > indexNavigateTo ? NavigationDirection.Back : NavigationDirection.Forward;
 
@@ -283,9 +305,12 @@ public class Region : IRegion
             MvvmHelpers.Navigated(CurrentView, parameters, to);
         }
 
-        foreach (var region in RegionManager.GetRegions(RegionHolder))
+        if (parameters.GetNavigationDirection() != NavigationDirection.New)
         {
-            region.NavigatedRecursively(parameters, to);
+            foreach (var region in RegionManager.GetRegions(CurrentView))
+            {
+                region.NavigatedRecursively(parameters, to);
+            }
         }
 
         if (!to)
@@ -333,7 +358,7 @@ public class Region : IRegion
             MvvmHelpers.WindowLifecycle(view, resume);
         }
 
-        foreach (var region in RegionManager.GetRegions(RegionHolder))
+        foreach (var region in RegionManager.GetRegions(StackContainer))
         {
             region.OnWindowLifecycleRecursively(resume);
         }
@@ -349,7 +374,7 @@ public class Region : IRegion
             }
         }
 
-        foreach (var region in RegionManager.GetRegions(RegionHolder))
+        foreach (var region in RegionManager.GetRegions(StackContainer))
         {
             region.OnPageLifecycleRecursively(appearing);
         }

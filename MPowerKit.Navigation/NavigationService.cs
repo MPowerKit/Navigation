@@ -271,6 +271,9 @@ public class NavigationService : INavigationService
 
     public virtual async ValueTask<NavigationResult> NavigateAsync(string stringUri, INavigationParameters? parameters = null, bool modal = false, bool animated = true)
     {
+        // need to be here to wait until ui finish its important work
+        await Task.Delay(1);
+
         parameters ??= new NavigationParameters();
 
         try
@@ -298,6 +301,8 @@ public class NavigationService : INavigationService
             {
                 await DoRelativeNavigation(pages, parameters, animated);
             }
+
+            if (pages?.Count > 0) await MvvmHelpers.OnPageLoadedRecursively(pages[0]!, parameters);
 
             return new NavigationResult(true, null);
         }

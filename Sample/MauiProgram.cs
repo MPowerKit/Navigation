@@ -19,6 +19,7 @@ public static class MauiProgram
                     s.RegisterForNavigation<MainPage>();
                     s.RegisterForNavigation<NewPage1>();
                     s.RegisterForNavigation<NewContent1>();
+                    s.RegisterForNavigation<NewContent2>();
                     s.RegisterForNavigation<PopupPageTest>();
                     s.RegisterForNavigation<FlyPage>();
                 })

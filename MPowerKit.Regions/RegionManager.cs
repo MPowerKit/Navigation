@@ -15,18 +15,18 @@ public class RegionManager : IRegionManager
         ServiceProvider = serviceProvider;
     }
 
-    public virtual NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null)
+    public virtual async ValueTask<NavigationResult> NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null)
     {
         parameters ??= new NavigationParameters();
 
         try
         {
-            if (!_regionHolders.ContainsKey(regionName))
+            if (!_regionHolders.TryGetValue(regionName, out WeakReference<ContentView>? value))
             {
                 throw new ArgumentNullException($"There is not registered region with name {regionName}");
             }
 
-            var regionHolder = (_regionHolders[regionName].TryGetTarget(out var target) ? target : null)
+            var regionHolder = (value.TryGetTarget(out var target) ? target : null)
                 ?? throw new NullReferenceException("Region was disposed");
 
             var scope = ViewServiceProviderAttached.GetServiceScope(regionHolder);
@@ -57,7 +57,7 @@ public class RegionManager : IRegionManager
 
             var region = scope.ServiceProvider.GetRequiredService<IRegion>();
 
-            return region.ReplaceAll(viewName, parameters);
+            return await region.ReplaceAll(viewName, parameters);
         }
         catch (Exception ex)
         {

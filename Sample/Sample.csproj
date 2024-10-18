@@ -68,13 +68,4 @@
 	  <ProjectReference Include="..\MPowerKit.Navigation\MPowerKit.Navigation.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <MauiXaml Update="FlyPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="PopupPageTest.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	</ItemGroup>
-
 </Project>

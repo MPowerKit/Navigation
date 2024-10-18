@@ -12,12 +12,12 @@ public class MPowerKitNavigtaionRenderer : NavigationRenderer
     {
         base.ViewDidLoad();
 
-        this.InteractivePopGestureRecognizer.Delegate = new SwipeBackDelegate(this);
+        InteractivePopGestureRecognizer.Delegate = new SwipeBackDelegate(this);
     }
 
     public override void ViewWillDisappear(bool animated)
     {
-        this.InteractivePopGestureRecognizer.Delegate = null;
+        InteractivePopGestureRecognizer.Delegate = null;
 
         base.ViewWillDisappear(animated);
     }

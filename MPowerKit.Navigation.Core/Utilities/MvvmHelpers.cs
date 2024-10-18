@@ -107,6 +107,39 @@ public static class MvvmHelpers
         return false;
     }
 
+    public static async Task OnPageLoadedRecursively(Page target, INavigationParameters parameters)
+    {
+        OnLoaded(target, parameters);
+        await OnLoadedAsync(target, parameters);
+
+        if (target is NavigationPage np)
+        {
+            await OnPageLoadedRecursively(np.CurrentPage, parameters);
+        }
+        else if (target is TabbedPage tp)
+        {
+            foreach (var item in tp.Children)
+            {
+                await OnPageLoadedRecursively(item, parameters);
+            }
+        }
+        else if (target is FlyoutPage fp)
+        {
+            await OnPageLoadedRecursively(fp.Flyout, parameters);
+            await OnPageLoadedRecursively(fp.Detail, parameters);
+        }
+    }
+
+    public static void OnLoaded(VisualElement target, INavigationParameters parameters)
+    {
+        InvokeViewAndViewModelAction<ILoadedAware>(target, v => v.OnLoaded(parameters));
+    }
+
+    public static Task OnLoadedAsync(VisualElement target, INavigationParameters parameters)
+    {
+        return InvokeViewAndViewModelActionAsync<ILoadedAsyncAware>(target, v => v.OnLoadedAsync(parameters));
+    }
+
     public static void PageNavigatedRecursively(Page target, INavigationParameters parameters, bool to)
     {
         var child = target switch

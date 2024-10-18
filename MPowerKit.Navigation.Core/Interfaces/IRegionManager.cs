@@ -2,6 +2,6 @@
 
 public interface IRegionManager
 {
-    NavigationResult NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);
+    ValueTask<NavigationResult> NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);
     IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
 }
