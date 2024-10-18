@@ -65,6 +65,19 @@ public class RegionManager : IRegionManager
         }
     }
 
+    public virtual IRegion? GetRegionByName(string regionName)
+    {
+        if (!_regionHolders.TryGetValue(regionName, out WeakReference<ContentView>? value))
+        {
+            throw new ArgumentNullException($"There is not registered region with name {regionName}");
+        }
+
+        var regionHolder = (value.TryGetTarget(out var target) ? target : null)
+            ?? throw new NullReferenceException("Region was disposed");
+
+        return ViewServiceProviderAttached.GetServiceScope(regionHolder)?.ServiceProvider.GetRequiredService<IRegion>();
+    }
+
     public virtual IEnumerable<IRegion> GetRegions(VisualElement? regionHolder)
     {
         var holders = RegionHolders.Where(v => MvvmHelpers.IsParentRegionHolder(v, regionHolder));
