@@ -72,9 +72,9 @@ public class PopupNavigationService : IPopupNavigationService
 
                     e.Handled = true;
 
-                    closeAction?.Invoke(new Confirmation(false, null));
                     page.BackgroundClicked -= Page_BackgroundClicked;
                     await this.HidePopupAsync(page, true);
+                    closeAction?.Invoke(new Confirmation(false, null));
                 }
                 catch { }
             }
@@ -90,8 +90,8 @@ public class PopupNavigationService : IPopupNavigationService
                     {
                         try
                         {
-                            closeAction?.Invoke(close.Confirmation);
                             await this.HidePopupAsync(page, close.Animated);
+                            closeAction?.Invoke(close.Confirmation);
                         }
                         catch { }
                     };
