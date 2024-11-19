@@ -3,7 +3,7 @@ using MPowerKit.Navigation.Interfaces;
 
 namespace Sample;
 
-public partial class MainPage : IInitializeAware
+public partial class MainPage : IInitializeAware, ILoadedAsyncAware
 {
     private readonly INavigationService _navigationService;
     private readonly IRegionManager _regionManager;
@@ -21,7 +21,12 @@ public partial class MainPage : IInitializeAware
 
     public void Initialize(INavigationParameters parameters)
     {
-        _regionManager.NavigateTo("MainRegion", "NewContent1", null);
+        
+    }
+
+    public async Task OnLoadedAsync(INavigationParameters navigationParameters)
+    {
+        await _regionManager.NavigateTo("MainRegion", "NewContent1", null);
     }
 
     private async void OnCounterClicked(object sender, EventArgs e)

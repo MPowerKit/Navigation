@@ -12,4 +12,5 @@ public interface INavigationService
     ValueTask<NavigationResult> GoBackAsync(INavigationParameters? parameters = null, bool modal = false, bool animated = true);
     ValueTask<NavigationResult> GoBackToRootAsync(INavigationParameters? parameters = null, bool animated = true);
     ValueTask<NavigationResult> NavigateAsync(string uri, INavigationParameters? navigationParameters = null, bool modal = false, bool animated = true);
+    ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null);
 }

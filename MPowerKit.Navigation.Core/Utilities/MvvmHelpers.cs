@@ -95,7 +95,7 @@ public static class MvvmHelpers
 
         while (view.Parent is not null)
         {
-            if (view.Parent is Page page)
+            if (view.Parent is ContentPage page)
             {
                 return page == regionHolder;
             }

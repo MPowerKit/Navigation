@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <FlyoutPage x:Class="Sample.FlyPage"
             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -7,6 +7,8 @@
         <ContentPage Title="Menu">
             <StackLayout>
                 <Label Text="This is flyout" />
+                <Button Text="Open NewPage1"
+                        Clicked="Button_Clicked"/>
             </StackLayout>
         </ContentPage>
     </FlyoutPage.Flyout>

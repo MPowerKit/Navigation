@@ -305,7 +305,7 @@ public class Region : IRegion
             MvvmHelpers.Navigated(CurrentView, parameters, to);
         }
 
-        if (parameters.GetNavigationDirection() != NavigationDirection.New)
+        if (parameters.GetNavigationDirection() != NavigationDirection.New || !to)
         {
             foreach (var region in RegionManager.GetRegions(CurrentView))
             {

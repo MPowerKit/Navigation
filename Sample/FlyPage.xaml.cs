@@ -1,9 +1,19 @@
+using MPowerKit.Navigation.Interfaces;
+
 namespace Sample;
 
 public partial class FlyPage : FlyoutPage
 {
-    public FlyPage()
+    private readonly INavigationService _navigationService;
+
+    public FlyPage(INavigationService navigationService)
     {
         InitializeComponent();
+        _navigationService = navigationService;
+    }
+
+    async void Button_Clicked(System.Object sender, System.EventArgs e)
+    {
+        var res = await _navigationService.NavigateThrougFlyoutPageAsync("NavigationPage/NewPage1");
     }
 }

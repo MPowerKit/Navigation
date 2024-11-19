@@ -3,5 +3,5 @@
 public interface IRegionManager
 {
     ValueTask<NavigationResult> NavigateTo(string regionName, string viewName, INavigationParameters? parameters = null);
-    IEnumerable<IRegion> GetRegions(VisualElement? regionHolder);
+    IEnumerable<IRegion> GetRegions(VisualElement? regionHolder, bool onlyDirectDescendants = true);
 }

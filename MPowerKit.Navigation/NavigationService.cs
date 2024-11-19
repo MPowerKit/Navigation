@@ -312,6 +312,35 @@ public class NavigationService : INavigationService
         }
     }
 
+    public virtual async ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null)
+    {
+        if (PageAccessor?.Page is not FlyoutPage) throw new InvalidOperationException("Can proceed this navigation only from FlyoutPage");
+
+        // need to be here to wait until ui finish its important work
+        await Task.Delay(1);
+
+        parameters ??= new NavigationParameters();
+
+        try
+        {
+            var uri = UriParsingHelper.ReplaceDotsAndParseUri(stringUri);
+
+            if (uri.IsAbsoluteUri) throw new InvalidOperationException("Using absolute navigation inside FlyoutPage is not allowed");
+
+            var pages = await ConstructPages(uri, parameters);
+
+            DoFlyoutPush(pages[0]!, parameters);
+
+            if (pages?.Count > 0) await MvvmHelpers.OnPageLoadedRecursively(pages[0]!, parameters);
+
+            return new NavigationResult(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new NavigationResult(false, ex);
+        }
+    }
+
     protected virtual async ValueTask DoRelativeNavigation(List<Page?> pages, INavigationParameters parameters, bool animated)
     {
         if (Window is null)
@@ -529,6 +558,22 @@ public class NavigationService : INavigationService
         MvvmHelpers.PageNavigatedRecursively(rootPage, parameters, true);
 
         Window.Page = rootPage;
+
+        MvvmHelpers.DestroyAllPages(navigateFrom);
+    }
+
+    protected virtual void DoFlyoutPush(Page rootPage, INavigationParameters parameters)
+    {
+        parameters[KnownNavigationParameters.NavigationDirection] = NavigationDirection.New;
+
+        var flyoutPage = (PageAccessor.Page as FlyoutPage)!;
+
+        var navigateFrom = flyoutPage.Detail;
+
+        MvvmHelpers.PageNavigatedRecursively(navigateFrom, parameters, false);
+        MvvmHelpers.PageNavigatedRecursively(rootPage, parameters, true);
+
+        flyoutPage.Detail = rootPage;
 
         MvvmHelpers.DestroyAllPages(navigateFrom);
     }

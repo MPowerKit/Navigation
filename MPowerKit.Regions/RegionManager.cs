@@ -78,9 +78,24 @@ public class RegionManager : IRegionManager
         return ViewServiceProviderAttached.GetServiceScope(regionHolder)?.ServiceProvider.GetRequiredService<IRegion>();
     }
 
-    public virtual IEnumerable<IRegion> GetRegions(VisualElement? regionHolder)
+    public virtual IEnumerable<IRegion> GetRegions(VisualElement? regionHolder, bool onlyDirectDescendants = true)
     {
         var holders = RegionHolders.Where(v => MvvmHelpers.IsParentRegionHolder(v, regionHolder));
+
+        if (onlyDirectDescendants)
+        {
+            var allHolders = holders.ToList();
+            foreach (var holder in holders.Reverse())
+            {
+                if (allHolders.Any(h => MvvmHelpers.IsParentRegionHolder(holder, h)))
+                {
+                    allHolders.Remove(holder);
+                }
+            }
+
+            holders = allHolders;
+        }
+
         foreach (var holder in holders)
         {
             if (holder is null) continue;
