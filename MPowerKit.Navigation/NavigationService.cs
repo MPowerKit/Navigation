@@ -217,7 +217,7 @@ public class NavigationService : INavigationService
             return;
         }
 
-        var previousRootPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window);
+        var previousRootPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window!);
         if (previousRootPage == farthestDirectParent)
         {
             throw new InvalidOperationException("Cannot navigate back from MainPage of the Window");

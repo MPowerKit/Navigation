@@ -195,6 +195,29 @@ public static class MvvmHelpers
         InvokeViewAndViewModelAction<INavigationAware>(view, to ? v => v.OnNavigatedTo(parameters) : v => v.OnNavigatedFrom(parameters));
     }
 
+    public static void SetTabsActiveState(TabbedPage tabbedPage)
+    {
+        for (int i = 0; i < tabbedPage.Children.Count; i++)
+        {
+            var view = tabbedPage.Children[i];
+
+            var active = tabbedPage.CurrentPage == view;
+
+            IsActiveViewAttached.SetIsActiveView(view, active);
+            InvokeViewAndViewModelAction<IActiveTabAware>(view, a => a.IsOnActiveTab = active);
+
+            if (view is not NavigationPage navPage) continue;
+
+            IsActiveViewAttached.SetIsActiveView(navPage.RootPage, active);
+            InvokeViewAndViewModelAction<IActiveTabAware>(navPage.RootPage, a => a.IsOnActiveTab = active);
+
+            if (navPage.RootPage == navPage.CurrentPage) continue;
+
+            IsActiveViewAttached.SetIsActiveView(navPage.CurrentPage, active);
+            InvokeViewAndViewModelAction<IActiveTabAware>(navPage.CurrentPage, a => a.IsOnActiveTab = active);
+        }
+    }
+
     public static void OnInitialized(VisualElement page, INavigationParameters parameters)
     {
         InvokeViewAndViewModelAction<IInitializeAware>(page, v => v.Initialize(parameters));
