@@ -6,7 +6,7 @@ public class MPowerKitWindowManager : IWindowManager
 {
     public Window? InitialWindow { get; set; }
     protected readonly IApplication Application;
-    protected readonly MPowerKitWindowCreator WindowCreator;
+    protected readonly MPowerKitWindowCreator? WindowCreator;
 
     public MPowerKitWindowManager(IApplication application)
     {

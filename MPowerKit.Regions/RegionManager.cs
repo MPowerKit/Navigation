@@ -110,9 +110,9 @@ public class RegionManager : IRegionManager
     private static readonly Dictionary<string, WeakReference<ContentView>> _regionHolders = [];
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IList<ContentView?> RegionHolders => _regionHolders.Values
+    public static IList<ContentView?> RegionHolders => [.. _regionHolders.Values
         .Select(static w => w.TryGetTarget(out var target) ? target : null)
-        .Where(static v => v is not null).ToList();
+        .Where(static v => v is not null)];
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static void RemoveHolder(string? key)
@@ -149,14 +149,14 @@ public class RegionManager : IRegionManager
 
         try
         {
-            if (_regionHolders.ContainsKey(newKey) && _regionHolders[newKey].TryGetTarget(out var target))
+            if (_regionHolders.TryGetValue(newKey, out WeakReference<ContentView>? value) && value.TryGetTarget(out var target))
             {
                 throw new Exception();
             }
 
             _regionHolders[newKey] = new(cv);
         }
-        catch (Exception ex)
+        catch
         {
             throw new ArgumentException($"Cannot register region with name {newKey}, because region with such name already exists");
         }

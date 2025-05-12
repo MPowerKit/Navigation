@@ -2,7 +2,7 @@
 
 public class ViewRegistrationModel
 {
-    public Type View { get; set; }
+    public required Type View { get; set; }
     public Type? ViewModel { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

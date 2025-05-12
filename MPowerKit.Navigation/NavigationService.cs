@@ -220,7 +220,7 @@ public class NavigationService : INavigationService
         var previousRootPage = MvvmHelpers.GetPreviousRootPageForNavigatingTo(Window!);
         if (previousRootPage == farthestDirectParent)
         {
-            throw new InvalidOperationException("Cannot navigate back from MainPage of the Window");
+            throw new InvalidOperationException("Cannot navigate back from root page of the Window");
         }
         if (farthestDirectParent.Navigation.NavigationStack.Count == 0)
         {
