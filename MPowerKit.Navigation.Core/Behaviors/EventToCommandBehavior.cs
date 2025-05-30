@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Input;
 
@@ -17,6 +16,9 @@ public class EventToCommandBehavior : BehaviorBase<BindableObject>
     /// </summary>
     protected Delegate? _handler;
 
+    static readonly MethodInfo _eventHandlerMethodInfo = typeof(EventToCommandBehavior).GetTypeInfo().GetDeclaredMethod(nameof(OnEventRaised))
+        ?? throw new InvalidOperationException($"Cannot find method {nameof(OnEventRaised)}");
+
     /// <summary>
     /// Subscribes to the event <see cref="BindableObject"/> object
     /// </summary>
@@ -27,13 +29,9 @@ public class EventToCommandBehavior : BehaviorBase<BindableObject>
     {
         base.OnAttachedTo(bindable);
 
-        var type = bindable.GetType();
+        ArgumentNullException.ThrowIfNull(_eventHandlerMethodInfo);
 
-        _eventInfo = type.GetRuntimeEvent(EventName);
-
-        ArgumentNullException.ThrowIfNull(_eventInfo, nameof(_eventInfo));
-
-        AddEventHandler(_eventInfo, bindable, OnEventRaised);
+        RegisterEvent(bindable);
     }
 
     /// <summary>
@@ -42,37 +40,36 @@ public class EventToCommandBehavior : BehaviorBase<BindableObject>
     /// <param name="bindable"><see cref="BindableObject"/> that is source of event</param>
     protected override void OnDetachingFrom(BindableObject bindable)
     {
-        if (_handler is not null) _eventInfo?.RemoveEventHandler(bindable, _handler);
-
-        _handler = null;
-        _eventInfo = null;
+        UnregisterEvent(bindable);
 
         base.OnDetachingFrom(bindable);
     }
 
-    private void AddEventHandler(EventInfo eventInfo, object item, Action<object, EventArgs> action)
+    private void RegisterEvent(BindableObject item)
     {
-        var type = eventInfo.EventHandlerType!;
+        UnregisterEvent(item);
 
-        var eventParameters = type
-            .GetRuntimeMethods()
-            .First(static m => m.Name == "Invoke")
-            .GetParameters()
-            .Select(static p => Expression.Parameter(p.ParameterType))
-            .ToArray();
+        _eventInfo = item.GetType().GetRuntimeEvent(EventName);
 
-        var actionInvoke = action
-            .GetType()
-            .GetRuntimeMethods()
-            .First(static m => m.Name == "Invoke");
+        ArgumentNullException.ThrowIfNull(_eventInfo, nameof(_eventInfo));
 
-        _handler = Expression.Lambda(
-            type,
-            Expression.Call(Expression.Constant(action), actionInvoke, eventParameters[0], eventParameters[1]),
-            eventParameters)
-            .Compile();
+        var handlerType = _eventInfo.EventHandlerType!;
 
-        eventInfo.AddEventHandler(item, _handler);
+        _handler = _eventHandlerMethodInfo.CreateDelegate(handlerType, this) ??
+            throw new ArgumentException($"{nameof(EventToCommandBehavior)}: Couldn't create event handler.", nameof(EventName));
+
+        _eventInfo.AddEventHandler(item, _handler);
+    }
+
+    private void UnregisterEvent(BindableObject item)
+    {
+        if (_eventInfo is not null && _handler is not null)
+        {
+            _eventInfo.RemoveEventHandler(item, _handler);
+        }
+
+        _eventInfo = null;
+        _handler = null;
     }
 
     /// <summary>

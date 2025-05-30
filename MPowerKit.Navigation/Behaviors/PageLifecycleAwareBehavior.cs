@@ -24,9 +24,12 @@ public class PageLifecycleAwareBehavior : BehaviorBase<Page>
 
     private void Bindable_Appearing(object? sender, EventArgs e)
     {
-        if (sender is not Page page || page.BindingContext is not IPageLifecycleAware aware) return;
+        if (sender is not Page page) return;
 
-        aware.OnAppearing();
+        if (page.BindingContext is IPageLifecycleAware aware)
+        {
+            aware.OnAppearing();
+        }
 
         if (MvvmHelpers.UsePageEventsInRegions)
         {
@@ -44,7 +47,7 @@ public class PageLifecycleAwareBehavior : BehaviorBase<Page>
 
     private void Bindable_Disappearing(object? sender, EventArgs e)
     {
-        if (sender is not Page page || page.BindingContext is not IPageLifecycleAware aware) return;
+        if (sender is not Page page) return;
 
         if (MvvmHelpers.UsePageEventsInRegions)
         {
@@ -59,6 +62,9 @@ public class PageLifecycleAwareBehavior : BehaviorBase<Page>
             }
         }
 
-        aware.OnDisappearing();
+        if (page.BindingContext is IPageLifecycleAware aware)
+        {
+            aware.OnDisappearing();
+        }
     }
 }
