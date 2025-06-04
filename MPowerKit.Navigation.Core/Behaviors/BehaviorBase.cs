@@ -1,7 +1,7 @@
 ﻿namespace MPowerKit.Navigation.Behaviors;
 
 /// <summary>
-/// Base class that extends on Xamarin Forms Behaviors.
+/// Base class that extends on MAUI Behaviors.
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class BehaviorBase<T> : Behavior<T> where T : BindableObject
@@ -24,6 +24,18 @@ public class BehaviorBase<T> : Behavior<T> where T : BindableObject
         }
 
         bindable!.BindingContextChanged += OnBindingContextChanged;
+        bindable.PropertyChanging += AssociatedObjectPropertyChanging;
+        bindable.PropertyChanged += AssociatedObjectPropertyChanged;
+    }
+
+    protected virtual void AssociatedObjectPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+
+    }
+
+    protected virtual void AssociatedObjectPropertyChanging(object sender, PropertyChangingEventArgs e)
+    {
+
     }
 
     /// <inheritDoc />

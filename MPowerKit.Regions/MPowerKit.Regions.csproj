@@ -8,7 +8,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>MPowerKit.Regions</Title>
-		<Version>1.4.1</Version>
+		<Version>1.4.2</Version>
 		<Authors>MPowerKit,Alex Dobrynin</Authors>
 		<Description>.NET MAUI MVVM navigation framework. It supports regular/modal navigation, opening/closing windows, regions</Description>
 		<Copyright>MPowerKit</Copyright>

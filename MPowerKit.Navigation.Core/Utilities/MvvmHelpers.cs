@@ -452,7 +452,8 @@ public static class MvvmHelpers
             Page? pageNavigateFrom;
             Page? pageNavigateTo;
 
-            if (target.Parent is null || target.Parent is Window wnd && target != wnd.Page)
+            if ((target.Parent is null || target.Parent is Window wnd && target != wnd.Page)
+                && (target.Navigation.NavigationStack.Count < 1 || !window.Navigation.ModalStack.Contains(target)))
             {
                 pageNavigateFrom = target;
                 pageNavigateTo = window.Navigation.ModalStack.Count > 0 ? window.Navigation.ModalStack[^1] : window.Page;
