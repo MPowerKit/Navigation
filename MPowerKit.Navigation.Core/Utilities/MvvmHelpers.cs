@@ -336,14 +336,24 @@ public static class MvvmHelpers
         }
 
         Destroy(page);
-
-        page.Behaviors?.Clear();
-        page.BindingContext = null;
     }
 
     public static void Destroy(VisualElement element)
     {
         InvokeViewAndViewModelAction<IDestructible>(element, static v => v.Destroy());
+
+#if ANDROID
+        element.Unloaded += VisualElementUnloaded;
+        void VisualElementUnloaded(object? sender, EventArgs e)
+        {
+            element.Unloaded -= VisualElementUnloaded;
+            element.Behaviors?.Clear();
+            element.BindingContext = null;
+        }
+#else
+        element.Behaviors?.Clear();
+        element.BindingContext = null;
+#endif
     }
 
     public static void OnWindowLifecycleWithModalStack(Window window, bool resume)

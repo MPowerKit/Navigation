@@ -347,8 +347,14 @@ public class Region : IRegion
 
         MvvmHelpers.Destroy(view);
 
-        view.Behaviors?.Clear();
-        view.BindingContext = null;
+#if NET9_0_OR_GREATER
+        view.Unloaded += VisualElementUnloaded;
+        void VisualElementUnloaded(object ? sender, EventArgs e)
+        {
+            view.Unloaded -= VisualElementUnloaded;
+            view.DisconnectHandlers();
+        }
+#endif
     }
 
     public virtual void OnWindowLifecycleRecursively(bool resume)
