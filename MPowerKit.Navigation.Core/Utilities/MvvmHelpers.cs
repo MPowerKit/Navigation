@@ -333,6 +333,7 @@ public static class MvvmHelpers
             {
                 region.DestroyAll();
             }
+            regionManager.UnregisterHolders(page);
         }
 
         Destroy(page);

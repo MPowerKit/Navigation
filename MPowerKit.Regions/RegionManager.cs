@@ -107,6 +107,22 @@ public class RegionManager : IRegionManager
         }
     }
 
+    public void UnregisterHolders(VisualElement regionHolder)
+    {
+        var kvps = _regionHolders.Where(static kvp => !kvp.Value.TryGetTarget(out var _)).ToList();
+        foreach (var kvp in kvps)
+        {
+            _regionHolders.Remove(kvp.Key);
+        }
+
+        var holders = RegionHolders.Where(v => MvvmHelpers.IsParentRegionHolder(v, regionHolder));
+        foreach (var holder in holders)
+        {
+            if (holder is null) continue;
+            RemoveHolder(GetRegionName(holder));
+        }
+    }
+
     private static readonly Dictionary<string, WeakReference<ContentView>> _regionHolders = [];
 
     [EditorBrowsable(EditorBrowsableState.Never)]

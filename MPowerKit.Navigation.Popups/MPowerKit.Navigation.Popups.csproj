@@ -16,7 +16,7 @@
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>MPowerKit.Navigation.Popups</Title>
-		<Version>1.4.3</Version>
+		<Version>1.4.4</Version>
 		<Authors>MPowerKit,Alex Dobrynin</Authors>
 		<Description>.NET MAUI MVVM navigation framework. It supports regular/modal navigation, opening/closing windows, regions, popups</Description>
 		<Copyright>MPowerKit</Copyright>
