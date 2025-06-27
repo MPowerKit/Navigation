@@ -165,7 +165,7 @@ public class PopupNavigationService : IPopupNavigationService
 
     protected virtual async ValueTask<PopupPage> ConfigurePage(string pageName, INavigationParameters parameters)
     {
-        var scope = ViewServiceProviderAttached.GetServiceScope(PageAccessor.Page!);
+        var scope = ViewServiceProviderAttached.GetServiceScope(PageAccessor.Page!).ServiceProvider.CreateScope();
 
         var page = (scope.ServiceProvider.GetViewAndViewModel(pageName) as PopupPage)!;
 
