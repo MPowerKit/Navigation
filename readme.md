@@ -44,10 +44,18 @@ Inspired by [Prism](https://github.com/PrismLibrary/Prism) navigation framework
             - [Register behaviors](#RegisterBehaviors)
             - [Already register behaviors](#AlreadyRegisterBehaviors)
         - [Configure app start](#Configure-app-start)
+    - [Usage](#Usage)
+        - [Navigate to the page](#navigate-to-the-page)
+        - [Navigate through flyout page](#navigate-through-flyout-page)
+        - [Go back](#go-back)
+        - [Select tab](#select-tab)
+        - [Toggle flyout](#Toggle-flyout)
+        - [Open new window](#Open-new-window)
+        - [Close window](#close-window)
 - [MPowerKit.Navigation.Popups](#MPowerKitNavigationPopups)
     - [Setup](#Setup-1)
         - [Register popup pages](#Register-popup-pages)
-    - [Usage](#Usage)
+    - [Usage](#Usage-1)
         - [IPopupDialogAware](#IPopupDialogAware)
             - [Example](#Example)
         - [IPopupNavigationService](#IPopupNavigationService)
@@ -515,7 +523,7 @@ To open new window you can do this from any page or it's VM.
 ValueTask<NavigationResult> OpenNewWindowAsync(string uri, INavigationParameters? parameters = null);
 ```
 
-#### Close current window
+#### Close window
 
 To close the window you can do this from any page or it's VM.
 
