@@ -14,6 +14,6 @@ public partial class FlyPage : FlyoutPage
 
     async void Button_Clicked(System.Object sender, System.EventArgs e)
     {
-        var res = await _navigationService.NavigateThrougFlyoutPageAsync("NavigationPage/NewPage1");
+        var res = await _navigationService.NavigateThroughFlyoutPageAsync("NavigationPage/NewPage1");
     }
 }

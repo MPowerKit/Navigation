@@ -17,7 +17,7 @@ public static class MauiProgram
                 b.ConfigureServices(s =>
                 {
                     s.RegisterForNavigation<MainPage>();
-                    s.RegisterForNavigation<NewPage1>();
+                    s.RegisterForNavigation<NewPage1, NewPageViewModel>();
                     s.RegisterForNavigation<NewContent1>();
                     s.RegisterForNavigation<NewContent2>();
                     s.RegisterForNavigation<PopupPageTest>();

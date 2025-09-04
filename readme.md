@@ -256,7 +256,7 @@ If you need to register services or configure app start you may need set up addi
 For this action there is ```ConfigureServices(s => { })``` extension method.
 
 <details>
-<summary><a name="RegisterServices">Register services</a></summary>
+<summary><a name="RegisterServices">Register your services</a></summary>
 <br>
 
 Since under the hood ```ConfigureServices()``` method uses ```IServiceCollection``` object of ```MauiAppBuilder``` you can also register your services outside ```ConfigureServices``` method.
@@ -275,7 +275,7 @@ mpowerBuilder.ConfigureServices(s =>
 </details>
 
 <details>
-<summary><a name="AlreadyRegisterServices">Already register services</a></summary>
+<summary><a name="AlreadyRegisterServices">Already registered services</a></summary>
 <br>
 
 There is already registered a bunch of neccessary services used by this library. The entire list you can find [here](/MPowerKit.Navigation/MPowerKitMvvmBuilder.cs#L38).
@@ -305,7 +305,7 @@ mpowerBuilder.ConfigureServices(s =>
 </details>
 
 <details>
-<summary><a name="RegisterPages">Register pages</a></summary>
+<summary><a name="RegisterPages">Register your pages</a></summary>
 <br>
 
 ```csharp
@@ -345,7 +345,7 @@ mpowerBuilder.ConfigureServices(s =>
 </details>
 
 <details>
-<summary><a name="AlreadyRegisterPages">Already register pages</a></summary>
+<summary><a name="AlreadyRegisterPages">Already registered pages</a></summary>
 <br>
 
 1. ```NavigationPage```. Note: For iOS and MacCatalyst custom navigation page renderer is registered to handle iOS/mac title bar back button click and swipe-to-close events.
@@ -356,7 +356,7 @@ mpowerBuilder.ConfigureServices(s =>
 </details>
 
 <details>
-<summary><a name="RegisterBehaviors">Register behaviors</a></summary>
+<summary><a name="RegisterBehaviors">Register your behaviors</a></summary>
 <br>
 
 If you need that your pages be resolved with already attached behaviors you can easily achieve this by next:
@@ -375,7 +375,7 @@ The behaviors should be ```typeof(Behavior)```
 </details>
 
 <details>
-<summary><a name="AlreadyRegisterBehaviors">Already register behaviors</a></summary>
+<summary><a name="AlreadyRegisterBehaviors">Already registered behaviors</a></summary>
 <br>
 
 1. ```PageLifecycleAwareBehavior```. Responsible for handling ```OnAppearing()``` and ```OnDisappearing()``` events of the page. Registered for all pages in the app.
@@ -434,6 +434,98 @@ mpowerBuilder.OnAppStart(async (serviceProvider, navigationService) =>
     else await navigationService.NavigateAsync("LoginPage");
 });
 ```
+
+### Usage
+
+To navigate through the app you need to inject ```INavigationService``` to your page's or viewmodel's contructor, and then you can just navigate to desired page:
+
+```csharp
+INavigationService _navigationService;
+
+await _navigationService.NavigateAsync("YourPageAssociationName", optionalNavigationParameters, optionalIsModal, optionalIsAnimated);
+```
+
+**Note: Each page or VM has it's own instance of ```INavigationService```, since it is registered as scoped service.**
+
+#### Navigate to the page
+
+```csharp
+ValueTask<NavigationResult> NavigateAsync(string uri, INavigationParameters? navigationParameters = null, bool modal = false, bool animated = true);
+```
+
+To navigate to ```TabbedPage``` with already created tabs you can do like this:
+
+```csharp
+await navigationService.NavigateAsync($"/TabbedPage" +
+    $"?{KnownNavigationParameters.CreateTab}=TabNavigationPage|{ViewNames.Tab1}" +
+    $"&{KnownNavigationParameters.CreateTab}=TabNavigationPage|{ViewNames.Tab2}" +
+    $"&{KnownNavigationParameters.CreateTab}={ViewNames.Tab3}" +
+    $"&{KnownNavigationParameters.CreateTab}={ViewNames.Tab4}" +
+    $"&{KnownNavigationParameters.SelectTab}={selectedPage}");
+```
+
+**Note: This will create tabs dynamically. This means that you should not specify any tabs in ```TabbedPage``` in your XAML.**
+
+To navigate to ```FlyoutPage``` with already created ```Detail``` you can do this as usual:
+
+```csharp
+await navigationService.NavigateAsync($"/FlyoutPage/NavigationPage/DetailPage");
+```
+
+**Note: ```Flyout``` should be statically specified in your ```FlyoutPage```'s XAML**
+
+#### Navigate through flyout page
+
+To replace the detail page of the ```FlyoutPage``` you can do this only from the ```FlyoutPage``` itself or it's VM.
+
+```csharp
+ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null);
+```
+
+#### Go back
+
+To go back to the previous page or to the root page you can do this from any page or it's VM.
+
+```csharp
+ValueTask<NavigationResult> GoBackAsync(INavigationParameters? parameters = null, bool modal = false, bool animated = true);
+ValueTask<NavigationResult> GoBackToRootAsync(INavigationParameters? parameters = null, bool animated = true);
+```
+
+#### Select tab
+
+To select tab of the tabbed page you can do this only from the ```TabbedPage``` itself or from the tabs or child pages of the tab.
+
+```csharp
+NavigationResult SelectTab(string tabName, INavigationParameters? parameters);
+```
+
+#### Toggle flyout
+
+To toggle flyout of the flyout page you can do this only from the ```FlyoutPage``` itself or from the ```Flyout``` or ```Detail``` pages or their child pages. This will open/close the flyout.
+
+```csharp
+NavigationResult ToggleFlyout(bool isPresented);
+```
+
+#### Open new window
+
+To open new window you can do this from any page or it's VM.
+
+```csharp
+ValueTask<NavigationResult> OpenNewWindowAsync(string uri, INavigationParameters? parameters = null);
+```
+
+#### Close current window
+
+To close the window you can do this from any page or it's VM.
+
+```csharp
+NavigationResult CloseWindow(Guid? windowId = null);
+```
+
+If ```windowId``` is not specified it will close the window the page or VM belongs to.
+
+**Note: ```INavigationService``` contains reference to the window it belongs to.**
 
 ---
 

@@ -48,7 +48,7 @@ public class NavigationService : INavigationService
             windowId ??= CurrentWindowId;
 
             var window = WindowManager.Windows.FirstOrDefault(x => x.Id == windowId)
-                ?? WindowManager.Windows.LastOrDefault()
+                ?? WindowManager.Windows[^1]
                 ?? throw new ArgumentException("Window not found");
 
             MvvmHelpers.DestroyAllPages(window.Page!);
@@ -312,7 +312,7 @@ public class NavigationService : INavigationService
         }
     }
 
-    public virtual async ValueTask<NavigationResult> NavigateThrougFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null)
+    public virtual async ValueTask<NavigationResult> NavigateThroughFlyoutPageAsync(string stringUri, INavigationParameters? parameters = null)
     {
         if (PageAccessor?.Page is not FlyoutPage) throw new InvalidOperationException("Can proceed this navigation only from FlyoutPage");
 
