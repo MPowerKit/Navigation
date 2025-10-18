@@ -12,17 +12,17 @@ public class NavigationService : INavigationService
 
     public Guid CurrentWindowId => Window?.Id ?? Guid.Empty;
 
-    private Window? _window;
+    protected Window? InternalWindow;
     public Window? Window
     {
         get
         {
-            if (_window is null && PageAccessor.Page is not null)
+            if (InternalWindow is null && PageAccessor.Page is not null)
             {
-                _window = PageAccessor.Page.Window;
+                InternalWindow = PageAccessor.Page.Window;
             }
 
-            return _window;
+            return InternalWindow;
         }
     }
 
@@ -34,6 +34,19 @@ public class NavigationService : INavigationService
         ServiceProvider = serviceProvider;
         WindowManager = windowManager;
         PageAccessor = pageAccessor;
+    }
+
+    /// <summary>
+    /// Used only during app start
+    /// DO NOT CALL THIS METHOD MANUALLY
+    /// </summary>
+    public virtual void CreateInitialWindow()
+    {
+        if (WindowManager.InitialWindow is not null) return;
+
+        var window = ServiceProvider.GetRequiredService<IMPowerKitWindow>();
+        InternalWindow = (window as Window)!;
+        WindowManager.OpenWindow(InternalWindow);
     }
 
     public virtual ValueTask<NavigationResult> OpenNewWindowAsync(string stringUri, INavigationParameters? parameters = null)
@@ -533,33 +546,37 @@ public class NavigationService : INavigationService
         {
             MvvmHelpers.PageNavigatedRecursively(rootPage, parameters, true);
 
-            _window = (ServiceProvider.GetRequiredService<IMPowerKitWindow>() as Window)!;
+            InternalWindow = (ServiceProvider.GetRequiredService<IMPowerKitWindow>() as Window)!;
 
-            if (_window is not MPowerKitWindow)
+            if (InternalWindow is not MPowerKitWindow)
             {
                 throw new ArgumentException($"Registered window should be of type {nameof(IMPowerKitWindow)}");
             }
 
-            _window.Page = rootPage;
+            InternalWindow.Page = rootPage;
 
-            WindowManager.OpenWindow(_window);
+            WindowManager.OpenWindow(InternalWindow);
 
             return;
         }
 
-        var navigateFrom = GetPageFromWindow()!;
+        var navigateFrom = GetPageFromWindow();
 
-        if (navigateFrom.Navigation.ModalStack.Count > 0)
+        if (navigateFrom is not null)
         {
-            navigateFrom = navigateFrom.Navigation.ModalStack[^1];
-        }
+            if (navigateFrom.Navigation.ModalStack.Count > 0)
+            {
+                navigateFrom = navigateFrom.Navigation.ModalStack[^1];
+            }
 
-        MvvmHelpers.PageNavigatedRecursively(navigateFrom, parameters, false);
+            MvvmHelpers.PageNavigatedRecursively(navigateFrom, parameters, false);
+        }
         MvvmHelpers.PageNavigatedRecursively(rootPage, parameters, true);
 
         Window.Page = rootPage;
 
-        MvvmHelpers.DestroyAllPages(navigateFrom);
+        if (navigateFrom is not null)
+            MvvmHelpers.DestroyAllPages(navigateFrom);
     }
 
     protected virtual void DoFlyoutPush(Page rootPage, INavigationParameters parameters)

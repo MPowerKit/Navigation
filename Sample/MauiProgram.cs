@@ -25,6 +25,7 @@ public static class MauiProgram
                 })
                 .UsePopupNavigation()
                 .UsePageEventsInRegions()
+                .OnInitialized(sp => { })
                 .OnAppStart("/FlyPage/NavigationPage/MainPage");
             })
             .UseMPowerKitRegions()

@@ -83,7 +83,14 @@ public class MPowerKitMvvmBuilder
         // Ensure that this is executed before we navigate.
         OnInitialized(provider);
 
-        ThreadUtil.RunOnUIThread(() => OnAppStartedAction(provider, provider.GetRequiredService<INavigationService>()));
+        ThreadUtil.RunOnUIThread(() =>
+        {
+            var navService = provider.GetRequiredService<INavigationService>();
+
+            navService.CreateInitialWindow();
+
+            return OnAppStartedAction(provider, navService);
+        });
     }
 
     public virtual MPowerKitMvvmBuilder OnAppStart(Func<IServiceProvider, INavigationService, ValueTask> onAppStarted)
