@@ -8,11 +8,11 @@ namespace MPowerKit.Navigation.PlatfromSpecific;
 
 public class MPowerKitNavigtaionRenderer : NavigationRenderer
 {
-    public override void ViewDidLoad()
+    public override void ViewWillAppear(bool animated)
     {
-        base.ViewDidLoad();
-
         InteractivePopGestureRecognizer.Delegate = new SwipeBackDelegate(this);
+        
+        base.ViewWillAppear(animated);
     }
 
     public override void ViewWillDisappear(bool animated)
