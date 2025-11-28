@@ -16,9 +16,9 @@ public static class UriParsingHelper
     {
         if (uri.IsAbsoluteUri) return uri;
 
-        string delimeter = "/";
+        string delimiter = "/";
 
-        return new Uri($"app://MPowerKit.github{(uri.OriginalString.StartsWith('/') ? "" : delimeter)}{uri}", UriKind.Absolute);
+        return new Uri($"app://MPowerKit.github{(uri.OriginalString.StartsWith('/') ? "" : delimiter)}{uri}", UriKind.Absolute);
     }
 
     public static Uri Parse(string uri)
@@ -46,7 +46,7 @@ public static class UriParsingHelper
 
         var segs = uri.Segments.ToList();
         segs.RemoveAll(static s => s == "/");
-        segs = segs.Select(static s => Uri.UnescapeDataString(s).Replace("/", "")).ToList();
+        segs = [.. segs.Select(static s => Uri.UnescapeDataString(s).Replace("/", ""))];
 
         return segs;
     }

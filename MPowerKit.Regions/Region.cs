@@ -70,7 +70,7 @@ public class Region : IRegion
                 DestroyRecursively(item);
             }
 
-            await OnLoadded(parameters);
+            await OnLoaded(parameters);
 
             return new NavigationResult(true, null);
         }
@@ -113,7 +113,7 @@ public class Region : IRegion
                 DestroyRecursively(item);
             }
 
-            await OnLoadded(parameters);
+            await OnLoaded(parameters);
 
             return new NavigationResult(true, null);
         }
@@ -156,7 +156,7 @@ public class Region : IRegion
                 DestroyRecursively(item);
             }
 
-            await OnLoadded(parameters);
+            await OnLoaded(parameters);
 
             return new NavigationResult(true, null);
         }
@@ -166,7 +166,7 @@ public class Region : IRegion
         }
     }
 
-    protected virtual async ValueTask OnLoadded(INavigationParameters parameters)
+    protected virtual async ValueTask OnLoaded(INavigationParameters parameters)
     {
         MvvmHelpers.OnLoaded(CurrentView!, parameters);
         await MvvmHelpers.OnLoadedAsync(CurrentView!, parameters);
@@ -349,7 +349,7 @@ public class Region : IRegion
 
 #if NET9_0_OR_GREATER
         view.Unloaded += VisualElementUnloaded;
-        void VisualElementUnloaded(object ? sender, EventArgs e)
+        void VisualElementUnloaded(object? sender, EventArgs e)
         {
             view.Unloaded -= VisualElementUnloaded;
             view.DisconnectHandlers();

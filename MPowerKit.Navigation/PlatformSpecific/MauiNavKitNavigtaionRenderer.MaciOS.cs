@@ -4,14 +4,14 @@ using Microsoft.Maui.Controls.Handlers.Compatibility;
 
 using UIKit;
 
-namespace MPowerKit.Navigation.PlatfromSpecific;
+namespace MPowerKit.Navigation.PlatformSpecific;
 
-public class MPowerKitNavigtaionRenderer : NavigationRenderer
+public class MPowerKitNavigationRenderer : NavigationRenderer
 {
     public override void ViewWillAppear(bool animated)
     {
         InteractivePopGestureRecognizer.Delegate = new SwipeBackDelegate(this);
-        
+
         base.ViewWillAppear(animated);
     }
 
@@ -36,9 +36,9 @@ public class MPowerKitNavigtaionRenderer : NavigationRenderer
 
     public class SwipeBackDelegate : UIGestureRecognizerDelegate
     {
-        protected MPowerKitNavigtaionRenderer NavRenderer { get; }
+        protected MPowerKitNavigationRenderer NavRenderer { get; }
 
-        public SwipeBackDelegate(MPowerKitNavigtaionRenderer navRenderer)
+        public SwipeBackDelegate(MPowerKitNavigationRenderer navRenderer)
         {
             NavRenderer = navRenderer;
         }

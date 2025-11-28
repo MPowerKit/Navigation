@@ -31,7 +31,7 @@ public class MPowerKitMvvmBuilder
 #if IOS || MACCATALYST
         mauiAppBuilder.ConfigureMauiHandlers(h =>
         {
-            h.AddHandler<NavigationPage, MPowerKit.Navigation.PlatfromSpecific.MPowerKitNavigtaionRenderer>();
+            h.AddHandler<NavigationPage, MPowerKit.Navigation.PlatformSpecific.MPowerKitNavigationRenderer>();
         });
 #endif
 

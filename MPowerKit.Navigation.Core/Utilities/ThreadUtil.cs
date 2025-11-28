@@ -234,8 +234,8 @@ public static class ThreadUtil
     private class ExclusiveSynchronizationContext : SynchronizationContext
     {
         private bool _done;
-        readonly AutoResetEvent _workItemsWaiting = new(false);
-        readonly Queue<Tuple<SendOrPostCallback, object?>> _items = [];
+        private readonly AutoResetEvent _workItemsWaiting = new(false);
+        private readonly Queue<Tuple<SendOrPostCallback, object?>> _items = [];
 
         public Exception? InnerException { get; set; }
 
@@ -273,7 +273,7 @@ public static class ThreadUtil
                 if (task is not null)
                 {
                     task.Item1(task.Item2);
-                    if (InnerException is not null) // the method threw an exeption
+                    if (InnerException is not null) // the method threw an exception
                     {
                         throw new AggregateException("ThreadUtil.Run method threw an exception.", InnerException);
                     }

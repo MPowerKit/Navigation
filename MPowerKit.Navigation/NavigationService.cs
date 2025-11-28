@@ -150,7 +150,7 @@ public class NavigationService : INavigationService
             var currentPage = GetCurrentPage()!;
             if (!IsActiveViewAttached.GetIsActiveView(currentPage))
             {
-                throw new InvalidOperationException("Cannot navigate back from inactvie page");
+                throw new InvalidOperationException("Cannot navigate back from inactive page");
             }
 
             if (currentPage.Parent is not NavigationPage np
@@ -196,7 +196,7 @@ public class NavigationService : INavigationService
             var currentPage = GetCurrentPage()!;
             if (!IsActiveViewAttached.GetIsActiveView(currentPage))
             {
-                throw new InvalidOperationException("Cannot navigate back from inactvie page");
+                throw new InvalidOperationException("Cannot navigate back from inactive page");
             }
 
             if (modal)
